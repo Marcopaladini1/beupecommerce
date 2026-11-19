@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="description" content="Conheça quatro sabores de suco proteico, escolha packs de 12 a 30 garrafas ou monte sua própria caixa com quantas garrafas quiser." />
+<meta name="theme-color" content="#ffffff" />
+<title>Suco Proteico | Conheça nossos sabores e monte seu kit</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="device" id="device">
+  <div class="site-content">
+    <!-- O menu começa diretamente sobre o fundo roxo -->
+    <header class="store-header site-wrap" id="inicio">
+      <a class="logo" href="#inicio" aria-label="Voltar ao início">[SUA MARCA]</a>
+      <nav class="nav" aria-label="Navegação principal desktop"><a href="#produtos">Packs</a><a href="#beneficios">Benefícios</a><a href="#monte-kit">Monte seu kit</a><a href="#social">Avaliações</a><a href="#sobre">Nossa história</a></nav>
+      <button type="button" class="cart-btn" id="open-cart" aria-label="Abrir carrinho"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M3 5h2l2.2 11h11L21 8H6"/><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg><span class="cart-label">Carrinho</span> <span id="cart-count" class="cart-count">0</span></button>
+    </header>
+    <!-- 02 hero -->
+    <section class="section hero" id="hero">
+  <div class="hero-copy">
+    <p class="section-kicker">SUA ROTINA. SEUS SABORES.</p>
+
+    <h1>Proteína que combina com o seu ritmo.</h1>
+
+    <p class="lead">
+      Dias corridos, planos diferentes, momentos só seus.
+      Conheça nossos quatro sabores e escolha como levar
+      o seu suco proteico.
+    </p>
+
+    <div class="hero-actions">
+      <a class="btn" href="#produtos">
+        Conhecer os sabores →
+      </a>
+      <a class="btn outline" href="#monte-kit">
+        Monte seu kit
+      </a>
+    </div>
+  </div>
+</section>
+    <!-- 03 product showcase / circular tabs -->
+    <section class="section products" id="produtos">
+      <div class="section-head"><div><p class="section-kicker">03 · Vitrine de produtos</p><h2>Seu próximo favorito está aqui.</h2><p class="section-desc">Primeira vez? Comece pelo Kit Degustação. Já sabe o que gosta? Escolha um pack de 12, 18, 24 ou 30 garrafas e personalize seus sabores.</p></div><span class="section-action">Packs: 12 / 18 / 24 / 30 garrafas</span></div>
+      <div class="product-feature" id="product-feature">
+        <div class="product-feature-copy" id="pack-panel" role="tabpanel" aria-labelledby="tab-tasting" tabindex="0">
+          <span class="feature-eyebrow" id="pack-category">DESTAQUE · KIT DEGUSTAÇÃO</span>
+          <h3 id="pack-title">Primeira vez por aqui? Conheça nossos 4 sabores.</h3>
+          <p class="feature-description" id="pack-description">Descubra os sabores da marca e encontre aquele que combina mais com você.</p>
+          <div class="feature-facts"><span id="pack-quantity">4 sabores</span><span id="pack-composition">Composição a confirmar</span></div>
+          <p class="feature-price" id="pack-price">[Preço a definir]</p>
+          <button class="btn" id="add-feature-pack" type="button">Quero experimentar <span aria-hidden="true">→</span></button>
+          
+          <p class="feature-footnote" id="pack-footnote">A quantidade de garrafas do Kit Degustação ainda será definida.</p>
+
+          <!-- Seletor de packs dentro do banner -->
+          <div class="pack-tabs-block">
+
+            <p class="pack-tabs-intro">Escolha seu pack</p>
+
+            
+<div class="pack-carousel">
+
+  <button
+    class="pack-carousel-arrow"
+    type="button"
+    data-step="-1"
+    aria-label="Ver pack anterior">
+    &#8249;
+  </button>
+
+  <div class="pack-tabs"
+       role="tablist"
+       aria-label="Selecione o pack para visualizar">
+
+    <button id="tab-tasting"
+            class="pack-tab active"
+            type="button"
+            role="tab"
+            aria-selected="true"
+            aria-controls="pack-panel"
+            tabindex="0"
+            data-pack="tasting">
+
+      <span class="pack-tab-image" aria-hidden="true">
+        <span class="pack-tab-bottle"></span>
+      </span>
+
+      <span class="pack-tab-label">Degustação</span>
+      <span class="pack-tab-meta">4 sabores</span>
+    </button>
+
+    <button id="tab-twelve"
+            class="pack-tab"
+            type="button"
+            role="tab"
+            aria-selected="false"
+            aria-controls="pack-panel"
+            tabindex="-1"
+            data-pack="twelve">
+
+      <span class="pack-tab-image" aria-hidden="true">
+        <span class="pack-tab-bottle"></span>
+      </span>
+
+      <span class="pack-tab-label">Pack 12</span>
+      <span class="pack-tab-meta">12 garrafas</span>
+    </button>
+
+    <button id="tab-eighteen"
+            class="pack-tab"
+            type="button"
+            role="tab"
+            aria-selected="false"
+            aria-controls="pack-panel"
+            tabindex="-1"
+            data-pack="eighteen">
+
+      <span class="pack-tab-image" aria-hidden="true">
+        <span class="pack-tab-bottle"></span>
+      </span>
+
+      <span class="pack-tab-label">Pack 18</span>
+      <span class="pack-tab-meta">18 garrafas</span>
+    </button>
+
+    <button id="tab-twentyfour"
+            class="pack-tab"
+            type="button"
+            role="tab"
+            aria-selected="false"
+            aria-controls="pack-panel"
+            tabindex="-1"
+            data-pack="twentyfour">
+
+      <span class="pack-tab-image" aria-hidden="true">
+        <span class="pack-tab-bottle"></span>
+      </span>
+
+      <span class="pack-tab-label">Pack 24</span>
+      <span class="pack-tab-meta">24 garrafas</span>
+    </button>
+
+    <button id="tab-thirty"
+            class="pack-tab"
+            type="button"
+            role="tab"
+            aria-selected="false"
+            aria-controls="pack-panel"
+            tabindex="-1"
+            data-pack="thirty">
+
+      <span class="pack-tab-image" aria-hidden="true">
+        <span class="pack-tab-bottle"></span>
+      </span>
+
+      <span class="pack-tab-label">Pack 30</span>
+      <span class="pack-tab-meta">30 garrafas</span>
+    </button>
+
+  </div>
+
+  <button
+    class="pack-carousel-arrow"
+    type="button"
+    data-step="1"
+    aria-label="Ver próximo pack">
+    &#8250;
+  </button>
+
+</div>
+
+
+            <p class="small-note">
+              * Preços e ofertas ilustrativos. A personalização acontece em grupos de 6 garrafas.
+            </p>
+
+          </div>
+        </div>
+
+        <div class="wire-image feature-product-media" id="pack-visual" aria-label="Representação ilustrativa do kit selecionado">
+
+  <img
+    id="pack-photo"
+    class="feature-product-photo"
+    alt=""
+    loading="lazy"
+    hidden
+  >
+  <div class="product-bottles" id="pack-bottles" aria-hidden="true"><div class="bottle-drawing"></div><div class="bottle-drawing"></div><div class="bottle-drawing"></div><div class="bottle-drawing"></div></div>
+          <span class="product-media-caption" id="pack-caption">[Imagem do Kit Degustação · 4 sabores]</span>
+        </div>
+      </div>
+    </section>
+    <!-- 04 pain -->
+    
+<section class="section pain" id="dor">
+  <div class="pain-grid">
+
+    <div class="pain-intro">
+      <span class="pain-tag">O desafio</span>
+
+      <h2>Sua rotina já tem coisas demais para resolver.</h2>
+
+      <p class="section-desc">
+        Entre compromissos, imprevistos e mil tarefas,
+        nem sempre sobra tempo para pensar em como
+        incluir proteína na alimentação.
+      </p>
+
+      <p class="pain-bridge">
+        E se escolher seu suco proteico fosse
+        a parte mais fácil do dia?
+      </p>
+    </div>
+
+    <div class="pain-card-row" aria-label="Desafios do dia a dia">
+
+      <article class="pain-topic">
+        <span class="pain-topic-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="9"/>
+            <path d="M12 7v5l3.5 2"/>
+          </svg>
+        </span>
+
+        <div>
+          <h3>O dia passa voando</h3>
+          <p>
+            Entre um compromisso e outro, o tempo
+            parece não dar conta.
+          </p>
+        </div>
+      </article>
+
+      <article class="pain-topic">
+        <span class="pain-topic-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <path d="M13 2 4.5 13h6L10 22l9.5-12h-6L13 2Z"/>
+          </svg>
+        </span>
+
+        <div>
+          <h3>Praticidade faz diferença</h3>
+          <p>
+            Nem sempre dá para parar tudo
+            e preparar alguma coisa.
+          </p>
+        </div>
+      </article>
+
+      <article class="pain-topic">
+        <span class="pain-topic-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <path d="M4 7h14l-3-3M18 7l-3 3M20 17H6l3-3M6 17l3 3"/>
+          </svg>
+        </span>
+
+        <div>
+          <h3>Ninguém quer sempre o mesmo sabor</h3>
+          <p>
+            Ter variedade deixa a rotina
+            um pouco mais interessante.
+          </p>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+    <!-- 05 benefits -->
+    
+<section class="section" id="beneficios">
+
+  <div class="benefits-header">
+    <div class="benefits-heading">
+      <span class="benefits-tag">05 · Benefícios</span>
+
+      <h2>
+        Menos complicação.<br>
+        Mais possibilidades.
+      </h2>
+    </div>
+
+    <p class="benefits-intro">
+      A gente simplificou a escolha: descubra os sabores,
+      combine seus favoritos e encontre o pack que faz
+      sentido para você.
+    </p>
+  </div>
+
+  <div class="benefits-grid">
+
+    <article class="benefit">
+      <div>
+        <h3>Escolha simples</h3>
+        <p>
+          Encontre seu pack sem ficar procurando
+          entre dezenas de opções.
+        </p>
+      </div>
+      <span class="benefit-number" aria-hidden="true">01 / 03</span>
+    </article>
+
+    <article class="benefit">
+      <div>
+        <h3>Do seu jeito</h3>
+        <p>
+          São quatro sabores para conhecer,
+          combinar e repetir como você preferir.
+        </p>
+      </div>
+      <span class="benefit-number" aria-hidden="true">02 / 03</span>
+    </article>
+
+    <article class="benefit">
+      <div>
+        <h3>Tudo às claras</h3>
+        <p>
+          Veja a quantidade de garrafas e a
+          composição da caixa antes de confirmar.
+        </p>
+      </div>
+      <span class="benefit-number" aria-hidden="true">03 / 03</span>
+    </article>
+
+  </div>
+
+</section>
+
+    <!-- 06 lifestyle -->
+    
+<section class="section lifestyle" id="lifestyle">
+  <div class="lifestyle-shell">
+
+    <div class="lifestyle-heading">
+      <span class="lifestyle-kicker">06 · Lifestyle</span>
+
+      <h2>
+        Um sabor para cada<br>
+        momento do seu dia.
+      </h2>
+
+      <p>
+        Na correria, na pausa ou com os amigos:
+        conheça nossos sucos na vida real.
+      </p>
+    </div>
+
+    <div class="lifestyle-tabs"
+         role="tablist"
+         aria-label="Explore momentos do dia">
+
+      <button class="lifestyle-tab is-active"
+              id="life-tab-rotina"
+              data-moment="rotina"
+              role="tab"
+              aria-selected="true"
+              aria-controls="lifestyle-panel"
+              tabindex="0"
+              type="button">Rotina</button>
+
+      <button class="lifestyle-tab"
+              id="life-tab-treino"
+              data-moment="treino"
+              role="tab"
+              aria-selected="false"
+              aria-controls="lifestyle-panel"
+              tabindex="-1"
+              type="button">Treino</button>
+
+      <button class="lifestyle-tab"
+              id="life-tab-pausa"
+              data-moment="pausa"
+              role="tab"
+              aria-selected="false"
+              aria-controls="lifestyle-panel"
+              tabindex="-1"
+              type="button">Pausa</button>
+
+      <button class="lifestyle-tab"
+              id="life-tab-lazer"
+              data-moment="lazer"
+              role="tab"
+              aria-selected="false"
+              aria-controls="lifestyle-panel"
+              tabindex="-1"
+              type="button">Lazer</button>
+    </div>
+
+    <div class="lifestyle-mosaic"
+         id="lifestyle-panel"
+         role="tabpanel"
+         aria-labelledby="life-tab-rotina"
+         tabindex="0">
+
+      <!-- Fotografia principal à esquerda -->
+      <div class="life-photo life-photo-main">
+        <img id="life-image-main"
+             alt=""
+             loading="lazy"
+             hidden>
+
+        <span class="life-photo-label" id="life-label-main">
+          [Foto principal: produto na rotina]
+        </span>
+      </div>
+
+      <!-- Coluna da direita -->
+      <div class="lifestyle-right">
+
+        <div class="lifestyle-small-photos">
+
+          <div class="life-photo life-photo-small">
+            <img id="life-image-secondary"
+                 alt=""
+                 loading="lazy"
+                 hidden>
+
+            <span class="life-photo-label"
+                  id="life-label-secondary">
+              [Foto: momento de consumo]
+            </span>
+          </div>
+
+          <div class="life-photo life-photo-small life-photo-warm">
+            <img id="life-image-tertiary"
+                 alt=""
+                 loading="lazy"
+                 hidden>
+
+            <span class="life-photo-label"
+                  id="life-label-tertiary">
+              [Foto: cotidiano]
+            </span>
+          </div>
+
+        </div>
+
+        <!-- Card inferior -->
+        <div class="lifestyle-story">
+          <div>
+            <p class="lifestyle-story-eyebrow"
+               id="life-story-category">
+              NO SEU DIA A DIA
+            </p>
+
+            <h3 id="life-story-title">
+              Cabe na rotina. Combina com você.
+            </h3>
+
+            <p id="life-story-description">
+              Entre os compromissos e os planos do dia,
+              tem sempre um momento para seu sabor favorito.
+            </p>
+          </div>
+
+          <a class="lifestyle-story-cta" href="#produtos">
+            Conhecer os sabores
+            <span aria-hidden="true">↗</span>
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+    <!-- 07 kit builder / six-bottle pack increments per flavor -->
+    <section class="section kit-section" id="monte-kit">
+  <div class="kit-showcase">
+
+    <div class="kit-visual">
+      <div class="kit-visual-photo">
+        <span class="placeholder-text">[Foto lifestyle vertical do produto]</span>
+      </div>
+    </div>
+
+    <div class="kit-panel">
+      <div class="kit-panel-head">
+        <p class="section-kicker">07 · Monte seu kit</p>
+        <h2>Sua caixa, suas escolhas.</h2>
+        <p class="section-desc">
+          Escolha livremente quantos packs fechados de <strong>6 garrafas</strong> quiser.
+          Misture os sabores ou repita seus favoritos, sem limite máximo.
+        </p>
+
+        <div class="kit-highlight-row">
+          <span class="kit-highlight">Sem limite</span>
+          <span class="kit-highlight">De 6 em 6</span>
+          <span class="kit-highlight">Repita sabores</span>
+        </div>
+      </div>
+
+      <div class="kit-progress-head">
+        <div>
+          <p class="kit-progress-label">Monte do seu jeito</p>
+          <h3 id="kit-selection-status">Escolha os sabores (0 garrafas)</h3>
+        </div>
+        <span class="pill">Cada grupo = 6</span>
+      </div>
+
+      <div id="kit-options" class="kit-option-list" aria-label="Seleção de sabores e packs de 6"></div>
+
+      <div class="kit-summary" aria-live="polite">
+        <span class="summary-title">Resumo da sua caixa</span>
+
+        <div class="kit-summary-number">
+          <strong><span id="kit-quantity">0</span> garrafas</strong>
+          <span id="kit-packs">0 packs de 6</span>
+        </div>
+
+        <div id="kit-description" class="kit-description">
+          Selecione ao menos um sabor
+        </div>
+      </div>
+
+      <div class="kit-checkout-box">
+        <div class="kit-feedback" id="kit-feedback" aria-live="polite">
+          Selecione um sabor: ele começa com 6 garrafas. Depois ajuste no + ou −, sem limite máximo.
+        </div>
+
+        <button class="btn" id="add-kit" disabled>
+          Adicionar minha caixa ao carrinho
+        </button>
+
+        <small class="kit-limit-help">
+          * Não há seleção de unidades avulsas. Para provar os quatro sabores, veja o Kit Degustação na vitrine.
+        </small>
+      </div>
+    </div>
+
+  </div>
+</section>
+    <!-- 08 social -->
+    
+<section class="section social" id="social">
+
+  <div class="social-top">
+    <div class="social-headline">
+      <p class="social-kicker">08 · VÍDEOS REAIS + PROVA SOCIAL</p>
+      <h2>Quem experimenta tem história para contar.</h2>
+    </div>
+
+    <div class="social-topnav"
+         role="tablist"
+         aria-label="Conteúdo da comunidade">
+
+      <button class="social-tab is-active"
+              type="button"
+              id="social-tab-videos"
+              role="tab"
+              aria-selected="true"
+              aria-controls="social-videos"
+              tabindex="0"
+              data-social-tab="videos">
+        Vídeos
+      </button>
+
+      <button class="social-tab"
+              type="button"
+              id="social-tab-reviews"
+              role="tab"
+              aria-selected="false"
+              aria-controls="social-reviews"
+              tabindex="-1"
+              data-social-tab="reviews">
+        Avaliações
+      </button>
+    </div>
+  </div>
+
+  <!-- GALERIA DE VÍDEOS -->
+  <div class="social-panel"
+       id="social-videos"
+       role="tabpanel"
+       aria-labelledby="social-tab-videos"
+       tabindex="0">
+
+    <div class="video-grid">
+
+      <button class="video-card"
+              type="button"
+              data-video="O suco no dia a dia"
+              aria-label="Abrir espaço do vídeo: O suco no dia a dia">
+
+        <span class="video-image video-image-one">
+          <span class="video-cover-placeholder">
+            [Capa de vídeo: rotina com o produto]
+          </span>
+          <span class="video-arrow" aria-hidden="true">↗</span>
+        </span>
+
+        <span class="video-card-title">O suco no dia a dia</span>
+      </button>
+
+      <button class="video-card"
+              type="button"
+              data-video="Primeira experiência"
+              aria-label="Abrir espaço do vídeo: Primeira experiência">
+
+        <span class="video-image video-image-two">
+          <span class="video-cover-placeholder">
+            [Capa de vídeo: primeira experiência]
+          </span>
+          <span class="video-arrow" aria-hidden="true">↗</span>
+        </span>
+
+        <span class="video-card-title">A primeira experiência</span>
+      </button>
+
+      <button class="video-card"
+              type="button"
+              data-video="Escolhendo sabores"
+              aria-label="Abrir espaço do vídeo: Escolhendo sabores">
+
+        <span class="video-image video-image-three">
+          <span class="video-cover-placeholder">
+            [Capa de vídeo: sabores favoritos]
+          </span>
+          <span class="video-arrow" aria-hidden="true">↗</span>
+        </span>
+
+        <span class="video-card-title">Sabores favoritos</span>
+      </button>
+
+      <button class="video-card"
+              type="button"
+              data-video="Momentos com o produto"
+              aria-label="Abrir espaço do vídeo: Momentos com o produto">
+
+        <span class="video-image video-image-four">
+          <span class="video-cover-placeholder">
+            [Capa de vídeo: momentos e lazer]
+          </span>
+          <span class="video-arrow" aria-hidden="true">↗</span>
+        </span>
+
+        <span class="video-card-title">
+          Um sabor para cada momento
+        </span>
+      </button>
+
+    </div>
+
+    <p class="social-note">
+      * Capas e vídeos ilustrativos até recebermos o conteúdo real da marca.
+    </p>
+  </div>
+
+  <!-- AVALIAÇÕES -->
+  <div class="social-panel"
+       id="social-reviews"
+       role="tabpanel"
+       aria-labelledby="social-tab-reviews"
+       tabindex="0"
+       hidden>
+
+    <div class="testimonial-placeholders">
+
+      <div class="review">
+        <div class="rating">[AVALIAÇÃO VERIFICADA]</div>
+        <p>“Espaço reservado para um depoimento real de cliente.”</p>
+        <small>[Nome / contexto / origem da avaliação]</small>
+      </div>
+
+      <div class="review">
+        <div class="rating">[AVALIAÇÃO VERIFICADA]</div>
+        <p>“Espaço reservado para outro depoimento autêntico.”</p>
+        <small>[Nome / contexto / origem da avaliação]</small>
+      </div>
+
+    </div>
+
+    <p class="social-note">
+      * Os depoimentos serão publicados após autorização e verificação.
+    </p>
+  </div>
+
+</section>
+
+    <!-- 09 brand -->
+    
+<section class="section brand-story"
+         id="sobre"
+         aria-labelledby="brand-story-title">
+
+  <!-- Mosaico fotográfico -->
+  <div class="founder-mosaic"
+       aria-label="Galeria de retratos dos sócios da marca">
+
+    <figure class="founder-shot">
+  <img
+    src="assets/socios/socio-01.webp"
+    alt="Retrato do sócio da marca"
+    loading="lazy"
+    decoding="async"
+  >
+</figure>
+
+    <figure class="founder-shot">
+  <img
+    src="assets/socios/socio-01.webp"
+    alt="Retrato do sócio da marca"
+    loading="lazy"
+    decoding="async"
+  >
+</figure>
+
+    <figure class="founder-shot">
+  <img
+    src="assets/socios/socio-01.webp"
+    alt="Retrato do sócio da marca"
+    loading="lazy"
+    decoding="async"
+  >
+</figure>
+
+    <figure class="founder-shot">
+  <img
+    src="assets/socios/socio-01.webp"
+    alt="Retrato do sócio da marca"
+    loading="lazy"
+    decoding="async"
+  >
+</figure>
+
+    <figure class="founder-shot">
+  <img
+    src="assets/socios/socio-01.webp"
+    alt="Retrato do sócio da marca"
+    loading="lazy"
+    decoding="async"
+  >
+</figure>
+
+    <figure class="founder-shot">
+  <img
+    src="assets/socios/socio-01.webp"
+    alt="Retrato do sócio da marca"
+    loading="lazy"
+    decoding="async"
+  >
+</figure>
+
+  </div>
+
+  <!-- Texto sobreposto às fotografias -->
+  <div class="brand-story-content">
+
+    <span class="brand-story-eyebrow">
+      09 · SOBRE A MARCA
+    </span>
+
+    <h2 id="brand-story-title">
+      Por trás de cada gole,<br>
+      tem gente de verdade.
+    </h2>
+
+    <p>
+      Conheça as pessoas que estão construindo
+      uma forma mais simples e cheia de sabor
+      de incluir proteína na rotina.
+    </p>
+
+  </div>
+
+</section>
+
+    <!-- 10 faq -->
+    
+<section class="section faq" id="faq">
+
+  <div class="faq-top">
+
+    <div class="faq-heading">
+      <span class="faq-kicker">
+        10 · PERGUNTAS FREQUENTES
+      </span>
+
+      <h2>
+        Ficou alguma dúvida?<br>
+        A gente te ajuda.
+      </h2>
+    </div>
+
+    <p class="faq-intro">
+      Da quantidade de proteína à escolha dos sabores,
+      reunimos as principais informações para você
+      comprar com tranquilidade.
+    </p>
+
+  </div>
+
+  <div class="faq-showcase">
+
+    <!-- PERGUNTAS -->
+    <div class="faq-questions"
+         aria-label="Dúvidas frequentes sobre o produto e a compra">
+
+      <details class="faq-item" name="faq-home">
+        <summary>
+          <span class="faq-index">01</span>
+          <span class="faq-question-text">
+            Quanto de proteína tem cada garrafa?
+          </span>
+          <span class="faq-toggle" aria-hidden="true"></span>
+        </summary>
+        <p>
+          [Inserir a quantidade por porção, conforme
+          rótulo e informação nutricional oficial.]
+        </p>
+      </details>
+
+      <details class="faq-item" name="faq-home">
+        <summary>
+          <span class="faq-index">02</span>
+          <span class="faq-question-text">
+            Como devo armazenar o produto?
+          </span>
+          <span class="faq-toggle" aria-hidden="true"></span>
+        </summary>
+        <p>
+          [Inserir orientações reais de conservação
+          e refrigeração.]
+        </p>
+      </details>
+
+      <details class="faq-item" name="faq-home">
+        <summary>
+          <span class="faq-index">03</span>
+          <span class="faq-question-text">
+            Como funciona a entrega?
+          </span>
+          <span class="faq-toggle" aria-hidden="true"></span>
+        </summary>
+        <p>
+          [Inserir prazo, regiões atendidas e condições
+          de frete quando definidos.]
+        </p>
+      </details>
+
+      <details class="faq-item" name="faq-home" open>
+        <summary>
+          <span class="faq-index">04</span>
+          <span class="faq-question-text">
+            Posso repetir um sabor ou misturar diferentes?
+          </span>
+          <span class="faq-toggle" aria-hidden="true"></span>
+        </summary>
+        <p>
+          Pode, sim! Cada grupo corresponde a 6 garrafas
+          de um sabor. No pack de 12, por exemplo, você
+          pode escolher 12 de laranja ou 6 de laranja e
+          6 de outro sabor.
+
+          Nos packs de 18, 24 e 30, a lógica é a mesma.
+          No Monte seu kit, você pode adicionar quantos
+          packs de 6 quiser, sem limite máximo.
+
+          O Kit Degustação é vendido separadamente.
+        </p>
+      </details>
+
+    </div>
+
+    <!-- FOTOGRAFIA DA DIREITA -->
+    <figure class="faq-visual">
+
+      <img
+  src="assets/faq-lifestyle.webp"
+  alt="Pessoa segurando o suco proteico"
+  loading="lazy"
+  decoding="async"
+>
+
+      <figcaption class="faq-glass-card">
+        <strong>4 sabores</strong>
+        <span>
+          Escolha, combine e repita seus favoritos.
+        </span>
+      </figcaption>
+
+    </figure>
+
+  </div>
+</section>
+
+    <!-- 11 footer -->
+    <footer class="section footer" id="footer"><p class="section-kicker">11 · Footer</p><div class="footer-grid"><div><div class="logo footer-logo">[SUA MARCA]</div><p>Seu ritmo. Seus sabores. Sua escolha.</p></div><div><h4>Comprar</h4><a href="#produtos">Produtos</a><a href="#monte-kit">Monte seu kit</a></div><div><h4>Institucional</h4><a href="#sobre">Sobre a marca</a><a href="#faq">Perguntas frequentes</a></div><div><h4>Ajuda</h4><p>[Atendimento]</p><p>[Entrega / trocas]</p><p>[Políticas legais]</p></div></div><div class="footer-note">HOME V8 · Demonstração de interface. Fotos, conteúdos, informações legais e condições comerciais pendentes de confirmação.</div></footer>
+    
+
+<nav class="mobile-bottom" aria-label="Navegação principal mobile">
+
+  <a class="mobile-nav-item is-active"
+     href="#inicio" data-nav="inicio"
+     aria-current="page" aria-label="Início">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1V10Z"/>
+    </svg>
+    <span class="mobile-nav-label">Início</span>
+  </a>
+
+  <a class="mobile-nav-item"
+     href="#produtos" data-nav="produtos"
+     aria-label="Packs">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <rect x="3" y="4" width="18" height="16" rx="3"/>
+      <path d="M3 10h18M8 14h3m2 0h3M12 4v6"/>
+    </svg>
+    <span class="mobile-nav-label">Packs</span>
+  </a>
+
+  <a class="mobile-nav-item"
+     href="#monte-kit" data-nav="monte-kit"
+     aria-label="Monte seu kit">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="m3 7 9-4 9 4v10l-9 4-9-4V7ZM3 7l9 4 9-4M12 11v10M8 5l8 4"/>
+    </svg>
+    <span class="mobile-nav-label">Monte kit</span>
+  </a>
+
+  <a class="mobile-nav-item"
+     href="#social" data-nav="social"
+     aria-label="Avaliações">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="m12 2.5 3.2 6.5 7.1 1.05-5.15 5.02 1.21 7.08L12 18.8 5.64 22.15l1.22-7.08L1.7 10.05 8.8 9Z"/>
+    </svg>
+    <span class="mobile-nav-label">Avaliações</span>
+  </a>
+
+</nav>
+
+
+  </div>
+</div>
+<div class="scrim" id="scrim" hidden></div>
+<aside class="cart-drawer" id="cart-drawer" role="dialog" aria-modal="true" aria-labelledby="cart-title" hidden><div class="drawer-top"><h2 id="cart-title">Meu carrinho</h2><button class="x-button" id="close-cart" aria-label="Fechar carrinho">×</button></div><p class="small-note">Carrinho demonstrativo: veja suas escolhas de sabores. Preços, frete e pagamento ainda não estão disponíveis.</p><div class="cart-list" id="cart-list"></div><div class="cart-foot"><p id="cart-total-label">Seu próximo favorito está a um clique.</p><button class="btn" id="checkout">Ir para o pagamento →</button><p>Pagamento indisponível nesta versão demonstrativa.</p></div></aside>
+<div class="modal" id="video-modal" role="dialog" aria-modal="true" aria-labelledby="video-title" hidden><div class="modal-panel"><div class="modal-head"><h2 id="video-title">Vídeo demonstrativo</h2><button class="x-button" id="close-video" aria-label="Fechar vídeo">×</button></div><div class="wire-image modal-video"><span class="play-icon">▶</span><span class="placeholder-text">[Vídeo real será incorporado aqui]</span></div><p>Área reservada para um vídeo gravado com o produto. Nenhum vídeo de cliente foi disponibilizado ainda.</p><button class="btn outline" id="done-video">Voltar à Home</button></div></div>
+<div class="modal" id="pack-flavor-modal" role="dialog" aria-modal="true" aria-labelledby="flavor-modal-title" aria-describedby="flavor-modal-intro" hidden>
+  <div class="modal-panel flavor-modal-panel">
+    <div class="modal-head"><div><p class="section-kicker">ETAPA 2 DE 2 · PERSONALIZE SEU PACK</p><h2 id="flavor-modal-title">Do seu jeito: escolha os sabores</h2></div><button type="button" class="x-button" id="close-pack-flavors" aria-label="Fechar seleção de sabores">×</button></div>
+    <p id="flavor-modal-intro" class="flavor-modal-intro">Seu pack, suas escolhas. Cada toque no + adiciona 6 garrafas do sabor selecionado.</p>
+    <div class="flavor-progress" aria-live="polite"><div class="flavor-progress-text"><strong id="flavor-modal-progress">0 de 2 grupos escolhidos</strong><span id="flavor-modal-bottle-count">0/12 garrafas</span></div><div class="flavor-progress-segments" id="flavor-progress-segments" aria-hidden="true"></div></div>
+    <div id="pack-flavor-options" class="pack-flavor-options" aria-label="Escolher quantidade por sabor"></div>
+    <div class="flavor-selection-summary" aria-live="polite"><div class="flavor-selection-summary-label">Sua caixa</div><strong id="flavor-modal-summary">Escolha os sabores para completar sua caixa.</strong><p id="flavor-modal-hint">Escolha exatamente 2 grupos de 6 garrafas.</p></div>
+    <div class="flavor-modal-actions"><button type="button" class="btn outline" id="cancel-pack-flavors">Voltar</button><button type="button" class="btn" id="confirm-pack-flavors" disabled>Complete seu pack para continuar</button></div>
+    <p class="small-note">* Protótipo: sabores e preços ilustrativos. Não vendemos unidades avulsas.</p>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+<script src="script.js" defer></script>
+</body>
+</html>
