@@ -7,20 +7,87 @@
 <meta name="theme-color" content="#ffffff" />
 <title>Suco Proteico | Conheça nossos sabores e monte seu kit</title>
 <link rel="stylesheet" href="style.css" />
+
 </head>
 <body>
+
+<!-- POP-UP DE BOAS-VINDAS -->
+
+<div
+  class="welcome-popup"
+  id="welcome-popup"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="welcome-title"
+  aria-describedby="welcome-description"
+  hidden
+>
+
+  <div class="welcome-popup-card">
+
+    <button
+      class="welcome-popup-close"
+      id="close-welcome"
+      type="button"
+      aria-label="Fechar aviso de boas-vindas"
+    >
+      &times;
+    </button>
+
+    <span class="welcome-popup-tag">
+      ✦ UM PRESENTE PARA VOCÊ
+    </span>
+
+    <h2 id="welcome-title">
+      Sua primeira compra merece algo especial.
+    </h2>
+
+    <p id="welcome-description">
+      Estamos preparando um cupom exclusivo de
+      boas-vindas para você.
+
+      Enquanto isso, que tal conhecer nossos sabores?
+    </p>
+
+    <a
+      href="#produtos"
+      class="welcome-popup-cta"
+      id="welcome-shop"
+    >
+      Conhecer os sabores
+      <span aria-hidden="true">→</span>
+    </a>
+
+    <small class="welcome-popup-note">
+      Cupom e condições promocionais ainda em definição.
+    </small>
+
+  </div>
+
+</div>
+
 <div class="device" id="device">
+
   <div class="site-content">
+
     <!-- O menu começa diretamente sobre o fundo roxo -->
+
     <header class="store-header site-wrap" id="inicio">
-      <a class="logo" href="#inicio" aria-label="Voltar ao início">[SUA MARCA]</a>
+      
+<a class="logo" href="#inicio" aria-label="BeUp — Voltar ao início">
+  <img
+    src="assets/logo beup branca.png"
+    alt="BeUp"
+    class="brand-logo"
+  >
+</a>
+
       <nav class="nav" aria-label="Navegação principal desktop"><a href="#produtos">Packs</a><a href="#beneficios">Benefícios</a><a href="#monte-kit">Monte seu kit</a><a href="#social">Avaliações</a><a href="#sobre">Nossa história</a></nav>
       <button type="button" class="cart-btn" id="open-cart" aria-label="Abrir carrinho"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M3 5h2l2.2 11h11L21 8H6"/><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg><span class="cart-label">Carrinho</span> <span id="cart-count" class="cart-count">0</span></button>
     </header>
     <!-- 02 hero -->
     <section class="section hero" id="hero">
   <div class="hero-copy">
-    <p class="section-kicker">SUA ROTINA. SEUS SABORES.</p>
 
     <h1>Proteína que combina com o seu ritmo.</h1>
 
@@ -47,12 +114,16 @@
         <div class="product-feature-copy" id="pack-panel" role="tabpanel" aria-labelledby="tab-tasting" tabindex="0">
           <span class="feature-eyebrow" id="pack-category">DESTAQUE · KIT DEGUSTAÇÃO</span>
           <h3 id="pack-title">Primeira vez por aqui? Conheça nossos 4 sabores.</h3>
-          <p class="feature-description" id="pack-description">Descubra os sabores da marca e encontre aquele que combina mais com você.</p>
-          <div class="feature-facts"><span id="pack-quantity">4 sabores</span><span id="pack-composition">Composição a confirmar</span></div>
-          <p class="feature-price" id="pack-price">[Preço a definir]</p>
-          <button class="btn" id="add-feature-pack" type="button">Quero experimentar <span aria-hidden="true">→</span></button>
           
-          <p class="feature-footnote" id="pack-footnote">A quantidade de garrafas do Kit Degustação ainda será definida.</p>
+<p class="feature-description" id="pack-description">Descubra os sabores da marca e encontre aquele que combina mais com você.</p>
+
+<p class="feature-price" id="pack-price">[Preço a definir]</p>
+
+<button class="btn" id="add-feature-pack" type="button">
+  Quero experimentar <span aria-hidden="true">→</span>
+</button>
+
+
 
           <!-- Seletor de packs dentro do banner -->
           <div class="pack-tabs-block">
@@ -170,11 +241,6 @@
   </button>
 
 </div>
-
-
-            <p class="small-note">
-              * Preços e ofertas ilustrativos. A personalização acontece em grupos de 6 garrafas.
-            </p>
 
           </div>
         </div>
@@ -330,14 +396,11 @@
 
 </section>
 
-    <!-- 06 lifestyle -->
     
 <section class="section lifestyle" id="lifestyle">
   <div class="lifestyle-shell">
 
     <div class="lifestyle-heading">
-      <span class="lifestyle-kicker">06 · Lifestyle</span>
-
       <h2>
         Um sabor para cada<br>
         momento do seu dia.
@@ -349,134 +412,58 @@
       </p>
     </div>
 
-    <div class="lifestyle-tabs"
-         role="tablist"
-         aria-label="Explore momentos do dia">
+    <div class="lifestyle-mosaic">
 
-      <button class="lifestyle-tab is-active"
-              id="life-tab-rotina"
-              data-moment="rotina"
-              role="tab"
-              aria-selected="true"
-              aria-controls="lifestyle-panel"
-              tabindex="0"
-              type="button">Rotina</button>
-
-      <button class="lifestyle-tab"
-              id="life-tab-treino"
-              data-moment="treino"
-              role="tab"
-              aria-selected="false"
-              aria-controls="lifestyle-panel"
-              tabindex="-1"
-              type="button">Treino</button>
-
-      <button class="lifestyle-tab"
-              id="life-tab-pausa"
-              data-moment="pausa"
-              role="tab"
-              aria-selected="false"
-              aria-controls="lifestyle-panel"
-              tabindex="-1"
-              type="button">Pausa</button>
-
-      <button class="lifestyle-tab"
-              id="life-tab-lazer"
-              data-moment="lazer"
-              role="tab"
-              aria-selected="false"
-              aria-controls="lifestyle-panel"
-              tabindex="-1"
-              type="button">Lazer</button>
-    </div>
-
-    <div class="lifestyle-mosaic"
-         id="lifestyle-panel"
-         role="tabpanel"
-         aria-labelledby="life-tab-rotina"
-         tabindex="0">
-
-      <!-- Fotografia principal à esquerda -->
+      <!-- Imagem principal -->
       <div class="life-photo life-photo-main">
-        <img id="life-image-main"
-             alt=""
-             loading="lazy"
-             hidden>
-
-        <span class="life-photo-label" id="life-label-main">
-          [Foto principal: produto na rotina]
-        </span>
+        <img
+          src="assets/lifestyle/branding1.png"
+          alt="Mulher tomando BeUp na quadra"
+          loading="lazy"
+          decoding="async"
+        >
       </div>
 
-      <!-- Coluna da direita -->
-      <div class="lifestyle-right">
+      <!-- Imagens secundárias -->
+      <div class="lifestyle-small-photos">
 
-        <div class="lifestyle-small-photos">
-
-          <div class="life-photo life-photo-small">
-            <img id="life-image-secondary"
-                 alt=""
-                 loading="lazy"
-                 hidden>
-
-            <span class="life-photo-label"
-                  id="life-label-secondary">
-              [Foto: momento de consumo]
-            </span>
-          </div>
-
-          <div class="life-photo life-photo-small life-photo-warm">
-            <img id="life-image-tertiary"
-                 alt=""
-                 loading="lazy"
-                 hidden>
-
-            <span class="life-photo-label"
-                  id="life-label-tertiary">
-              [Foto: cotidiano]
-            </span>
-          </div>
-
+        <div class="life-photo life-photo-small">
+          <img
+            src="assets/lifestyle/branding2.png"
+            alt="Homem segurando uma garrafa BeUp"
+            loading="lazy"
+            decoding="async"
+          >
         </div>
 
-        <!-- Card inferior -->
-        <div class="lifestyle-story">
-          <div>
-            <p class="lifestyle-story-eyebrow"
-               id="life-story-category">
-              NO SEU DIA A DIA
-            </p>
-
-            <h3 id="life-story-title">
-              Cabe na rotina. Combina com você.
-            </h3>
-
-            <p id="life-story-description">
-              Entre os compromissos e os planos do dia,
-              tem sempre um momento para seu sabor favorito.
-            </p>
-          </div>
-
-          <a class="lifestyle-story-cta" href="#produtos">
-            Conhecer os sabores
-            <span aria-hidden="true">↗</span>
-          </a>
+        <div class="life-photo life-photo-small">
+          <img
+            src="assets/lifestyle/branding3.png"
+            alt="Atleta tomando BeUp"
+            loading="lazy"
+            decoding="async"
+          >
         </div>
 
       </div>
+
     </div>
+
+    <!-- CTA centralizado -->
+    <div class="lifestyle-actions">
+      <a class="lifestyle-story-cta" href="#produtos">
+        Conhecer os sabores
+        <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+
   </div>
 </section>
+
 
     <!-- 07 kit builder / six-bottle pack increments per flavor -->
     <section class="section kit-section" id="monte-kit">
   <div class="kit-showcase">
-
-    <div class="kit-visual">
-      <div class="kit-visual-photo">
-        <span class="placeholder-text">[Foto lifestyle vertical do produto]</span>
-      </div>
-    </div>
 
     <div class="kit-panel">
       <div class="kit-panel-head">
@@ -486,30 +473,50 @@
           Escolha livremente quantos packs fechados de <strong>6 garrafas</strong> quiser.
           Misture os sabores ou repita seus favoritos, sem limite máximo.
         </p>
-
-        <div class="kit-highlight-row">
-          <span class="kit-highlight">Sem limite</span>
-          <span class="kit-highlight">De 6 em 6</span>
-          <span class="kit-highlight">Repita sabores</span>
-        </div>
       </div>
+      
+<section class="benefits-unlock"
+         id="kit-benefits"
+         aria-label="Benefícios por quantidade">
 
-      <div class="kit-progress-head">
-        <div>
-          <p class="kit-progress-label">Monte do seu jeito</p>
-          <h3 id="kit-selection-status">Escolha os sabores (0 garrafas)</h3>
-        </div>
-        <span class="pill">Cada grupo = 6</span>
-      </div>
+  <div class="benefits-unlock-heading">
+    <div>
+      <span class="benefits-unlock-kicker">
+        VANTAGENS POR QUANTIDADE
+      </span>
+      <strong class="benefits-unlock-title">
+        Leve mais, ganhe mais!
+      </strong>
+    </div>
+  </div>
 
-      <div id="kit-options" class="kit-option-list" aria-label="Seleção de sabores e packs de 6"></div>
+  <div class="benefits-unlock-meter"
+       role="progressbar"
+       aria-label="Progresso dos benefícios"
+       aria-valuemin="0"
+       aria-valuemax="30"
+       aria-valuenow="0">
+    <div class="benefits-unlock-fill"></div>
+  </div>
+
+  <div class="benefits-unlock-tiers"></div>
+
+  <p class="benefits-unlock-next" aria-live="polite">
+    Comece com 6 garrafas para alcançar a primeira etapa.
+  </p>
+
+</section>
+
+<div id="kit-options"
+     class="kit-option-list"
+     aria-label="Seleção de sabores e packs de 6"></div>
+
 
       <div class="kit-summary" aria-live="polite">
         <span class="summary-title">Resumo da sua caixa</span>
 
         <div class="kit-summary-number">
           <strong><span id="kit-quantity">0</span> garrafas</strong>
-          <span id="kit-packs">0 packs de 6</span>
         </div>
 
         <div id="kit-description" class="kit-description">
@@ -523,7 +530,7 @@
         </div>
 
         <button class="btn" id="add-kit" disabled>
-          Adicionar minha caixa ao carrinho
+          Adicionar ao carrinho
         </button>
 
         <small class="kit-limit-help">
@@ -687,65 +694,30 @@
          id="sobre"
          aria-labelledby="brand-story-title">
 
-  <!-- Mosaico fotográfico -->
-  <div class="founder-mosaic"
-       aria-label="Galeria de retratos dos sócios da marca">
+  <!-- Fotografias das sócias -->
 
-    <figure class="founder-shot">
-  <img
-    src="assets/socios/socio-01.webp"
-    alt="Retrato do sócio da marca"
-    loading="lazy"
-    decoding="async"
-  >
-</figure>
+<div class="founder-mosaic"
+     aria-label="Galeria de retratos das sócias da BeUp">
 
-    <figure class="founder-shot">
-  <img
-    src="assets/socios/socio-01.webp"
-    alt="Retrato do sócio da marca"
-    loading="lazy"
-    decoding="async"
-  >
-</figure>
+  <figure class="founder-shot">
+    <img
+      src="assets/socios/socio1.png"
+      alt="Sócia da BeUp"
+      loading="lazy"
+      decoding="async"
+    >
+  </figure>
 
-    <figure class="founder-shot">
-  <img
-    src="assets/socios/socio-01.webp"
-    alt="Retrato do sócio da marca"
-    loading="lazy"
-    decoding="async"
-  >
-</figure>
+  <figure class="founder-shot">
+    <img
+      src="assets/socios/socio2.png"
+      alt="Sócia da BeUp"
+      loading="lazy"
+      decoding="async"
+    >
+  </figure>
 
-    <figure class="founder-shot">
-  <img
-    src="assets/socios/socio-01.webp"
-    alt="Retrato do sócio da marca"
-    loading="lazy"
-    decoding="async"
-  >
-</figure>
-
-    <figure class="founder-shot">
-  <img
-    src="assets/socios/socio-01.webp"
-    alt="Retrato do sócio da marca"
-    loading="lazy"
-    decoding="async"
-  >
-</figure>
-
-    <figure class="founder-shot">
-  <img
-    src="assets/socios/socio-01.webp"
-    alt="Retrato do sócio da marca"
-    loading="lazy"
-    decoding="async"
-  >
-</figure>
-
-  </div>
+</div>
 
   <!-- Texto sobreposto às fotografias -->
   <div class="brand-story-content">
@@ -867,36 +839,36 @@
     </div>
 
     <!-- FOTOGRAFIA DA DIREITA -->
-    <figure class="faq-visual">
-
-      <img
-  src="assets/faq-lifestyle.webp"
-  alt="Pessoa segurando o suco proteico"
-  loading="lazy"
-  decoding="async"
->
-
-      <figcaption class="faq-glass-card">
-        <strong>4 sabores</strong>
-        <span>
-          Escolha, combine e repita seus favoritos.
-        </span>
-      </figcaption>
-
-    </figure>
+<figure class="faq-visual">
+  <img
+    src="assets/secao-faq.png"
+    alt="Suco proteico BeUp refletido em óculos de sol"
+    loading="lazy"
+    decoding="async"
+  >
+</figure>
 
   </div>
 </section>
 
     <!-- 11 footer -->
-    <footer class="section footer" id="footer"><p class="section-kicker">11 · Footer</p><div class="footer-grid"><div><div class="logo footer-logo">[SUA MARCA]</div><p>Seu ritmo. Seus sabores. Sua escolha.</p></div><div><h4>Comprar</h4><a href="#produtos">Produtos</a><a href="#monte-kit">Monte seu kit</a></div><div><h4>Institucional</h4><a href="#sobre">Sobre a marca</a><a href="#faq">Perguntas frequentes</a></div><div><h4>Ajuda</h4><p>[Atendimento]</p><p>[Entrega / trocas]</p><p>[Políticas legais]</p></div></div><div class="footer-note">HOME V8 · Demonstração de interface. Fotos, conteúdos, informações legais e condições comerciais pendentes de confirmação.</div></footer>
+    <footer class="section footer" id="footer"><p class="section-kicker">11 · Footer</p><div class="footer-grid"><div>
+<div class="logo footer-logo">
+  <img
+    src="assets/logo beup branca.png"
+    alt="BeUp"
+    class="brand-logo"
+  >
+</div>
+<p>Seu ritmo. Seus sabores. Sua escolha.</p></div><div><h4>Comprar</h4><a href="#produtos">Produtos</a><a href="#monte-kit">Monte seu kit</a></div><div><h4>Institucional</h4><a href="#sobre">Sobre a marca</a><a href="#faq">Perguntas frequentes</a></div><div><h4>Ajuda</h4><p>[Atendimento]</p><p>[Entrega / trocas]</p><p>[Políticas legais]</p></div></div>
     
 
 <nav class="mobile-bottom" aria-label="Navegação principal mobile">
 
-  <a class="mobile-nav-item is-active"
-     href="#inicio" data-nav="inicio"
-     aria-current="page" aria-label="Início">
+  
+<a class="mobile-nav-item"
+   href="#inicio" data-nav="inicio"
+   aria-label="Início">
     <svg viewBox="0 0 24 24" aria-hidden="true">
       <path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1V10Z"/>
     </svg>
@@ -937,19 +909,134 @@
   </div>
 </div>
 <div class="scrim" id="scrim" hidden></div>
-<aside class="cart-drawer" id="cart-drawer" role="dialog" aria-modal="true" aria-labelledby="cart-title" hidden><div class="drawer-top"><h2 id="cart-title">Meu carrinho</h2><button class="x-button" id="close-cart" aria-label="Fechar carrinho">×</button></div><p class="small-note">Carrinho demonstrativo: veja suas escolhas de sabores. Preços, frete e pagamento ainda não estão disponíveis.</p><div class="cart-list" id="cart-list"></div><div class="cart-foot"><p id="cart-total-label">Seu próximo favorito está a um clique.</p><button class="btn" id="checkout">Ir para o pagamento →</button><p>Pagamento indisponível nesta versão demonstrativa.</p></div></aside>
-<div class="modal" id="video-modal" role="dialog" aria-modal="true" aria-labelledby="video-title" hidden><div class="modal-panel"><div class="modal-head"><h2 id="video-title">Vídeo demonstrativo</h2><button class="x-button" id="close-video" aria-label="Fechar vídeo">×</button></div><div class="wire-image modal-video"><span class="play-icon">▶</span><span class="placeholder-text">[Vídeo real será incorporado aqui]</span></div><p>Área reservada para um vídeo gravado com o produto. Nenhum vídeo de cliente foi disponibilizado ainda.</p><button class="btn outline" id="done-video">Voltar à Home</button></div></div>
-<div class="modal" id="pack-flavor-modal" role="dialog" aria-modal="true" aria-labelledby="flavor-modal-title" aria-describedby="flavor-modal-intro" hidden>
-  <div class="modal-panel flavor-modal-panel">
-    <div class="modal-head"><div><p class="section-kicker">ETAPA 2 DE 2 · PERSONALIZE SEU PACK</p><h2 id="flavor-modal-title">Do seu jeito: escolha os sabores</h2></div><button type="button" class="x-button" id="close-pack-flavors" aria-label="Fechar seleção de sabores">×</button></div>
-    <p id="flavor-modal-intro" class="flavor-modal-intro">Seu pack, suas escolhas. Cada toque no + adiciona 6 garrafas do sabor selecionado.</p>
-    <div class="flavor-progress" aria-live="polite"><div class="flavor-progress-text"><strong id="flavor-modal-progress">0 de 2 grupos escolhidos</strong><span id="flavor-modal-bottle-count">0/12 garrafas</span></div><div class="flavor-progress-segments" id="flavor-progress-segments" aria-hidden="true"></div></div>
-    <div id="pack-flavor-options" class="pack-flavor-options" aria-label="Escolher quantidade por sabor"></div>
-    <div class="flavor-selection-summary" aria-live="polite"><div class="flavor-selection-summary-label">Sua caixa</div><strong id="flavor-modal-summary">Escolha os sabores para completar sua caixa.</strong><p id="flavor-modal-hint">Escolha exatamente 2 grupos de 6 garrafas.</p></div>
-    <div class="flavor-modal-actions"><button type="button" class="btn outline" id="cancel-pack-flavors">Voltar</button><button type="button" class="btn" id="confirm-pack-flavors" disabled>Complete seu pack para continuar</button></div>
-    <p class="small-note">* Protótipo: sabores e preços ilustrativos. Não vendemos unidades avulsas.</p>
-  </div>
+<aside class="cart-drawer" id="cart-drawer" role="dialog" aria-modal="true" aria-labelledby="cart-title" hidden><div class="drawer-top"><h2 id="cart-title">Meu carrinho</h2><button class="x-button" id="close-cart" type="button" aria-label="Fechar carrinho">
+  &times;
+</button>
 </div>
+
+<section class="benefits-unlock"
+         id="cart-benefits"
+         aria-label="Benefícios do carrinho">
+
+  <div class="benefits-unlock-heading">
+    <div>
+      <span class="benefits-unlock-kicker">
+        SUAS VANTAGENS
+      </span>
+      <strong class="benefits-unlock-title">
+        Continue desbloqueando etapas
+      </strong>
+    </div>
+    <span class="benefits-unlock-count">0 garrafas</span>
+  </div>
+
+  <div class="benefits-unlock-meter"
+       role="progressbar"
+       aria-label="Progresso dos benefícios"
+       aria-valuemin="0"
+       aria-valuemax="30"
+       aria-valuenow="0">
+    <div class="benefits-unlock-fill"></div>
+  </div>
+
+  <div class="benefits-unlock-tiers"></div>
+
+  <p class="benefits-unlock-next" aria-live="polite"></p>
+
+</section>
+
+<div class="cart-list" id="cart-list"></div>
+<div class="cart-foot"><p id="cart-total-label">Seu próximo favorito está a um clique.</p><button class="btn" id="checkout">Ir para o pagamento →</button></div></aside>
+<div class="modal" id="video-modal" role="dialog" aria-modal="true" aria-labelledby="video-title" hidden><div class="modal-panel"><div class="modal-head"><h2 id="video-title">Vídeo demonstrativo</h2><button class="x-button" id="close-video" aria-label="Fechar vídeo">×</button></div><div class="wire-image modal-video"><span class="play-icon">▶</span><span class="placeholder-text">[Vídeo real será incorporado aqui]</span></div><p>Área reservada para um vídeo gravado com o produto. Nenhum vídeo de cliente foi disponibilizado ainda.</p><button class="btn outline" id="done-video">Voltar à Home</button></div></div>
+
+<div class="modal"
+     id="pack-flavor-modal"
+     role="dialog"
+     aria-modal="true"
+     aria-labelledby="flavor-modal-title"
+     aria-describedby="flavor-modal-intro"
+     hidden>
+
+  <div class="modal-panel flavor-modal-panel">
+
+    <div class="modal-head">
+      <h2 id="flavor-modal-title">
+        Personalize seu pack
+      </h2>
+
+      <button
+        type="button"
+        class="x-button"
+        id="close-pack-flavors"
+        aria-label="Fechar seleção de sabores">
+        &times;
+      </button>
+    </div>
+
+    <p id="flavor-modal-intro" class="flavor-modal-intro">
+      Cada + adiciona 6 garrafas. Você pode repetir sabores.
+    </p>
+
+    <!-- Progresso da seleção -->
+
+    <div class="flavor-progress" aria-live="polite">
+
+      <div class="flavor-progress-text">
+        <strong id="flavor-modal-bottle-count">
+          0 garrafas
+        </strong>
+      </div>
+
+      <div class="flavor-progress-segments"
+           id="flavor-progress-segments"
+           aria-hidden="true"></div>
+
+    </div>
+
+    <!-- Seleção dos sabores -->
+
+    <div id="pack-flavor-options"
+         class="pack-flavor-options"
+         aria-label="Escolher quantidade por sabor">
+    </div>
+
+    <!-- Benefícios simplificados -->
+
+    <section class="benefits-unlock"
+             id="pack-benefits"
+             aria-label="Benefícios do pack">
+
+      <div class="benefits-unlock-heading">
+        <strong class="benefits-unlock-title">
+          Benefícios do pack
+        </strong>
+      </div>
+
+      <div class="benefits-unlock-tiers"></div>
+
+      <p class="benefits-unlock-disclaimer">
+        Benefícios ilustrativos, sujeitos à confirmação.
+      </p>
+
+    </section>
+
+    <!-- CTA -->
+
+    <div class="flavor-modal-actions">
+
+      <button type="button"
+              class="btn"
+              id="confirm-pack-flavors"
+              disabled>
+        Adicionar ao carrinho →
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 <script src="script.js" defer></script>
 </body>

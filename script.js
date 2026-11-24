@@ -8,11 +8,127 @@
   updateResponsiveLayout();
   if (mobileMedia.addEventListener) {
     mobileMedia.addEventListener('change', updateResponsiveLayout);
+  
   } else {
     mobileMedia.addListener(updateResponsiveLayout);
   }
 
+  // ==================================
+  // POP-UP DE BOAS-VINDAS
+  // ==================================
+
+  const welcomePopup = $('#welcome-popup');
+  const closeWelcomeButton = $('#close-welcome');
+  const welcomeShopButton = $('#welcome-shop');
+
+  const welcomeStorageKey = 'welcomePopupDismissed';
+
+  let welcomePreviousFocus = null;
+
+  function closeWelcomePopup() {
+    if (welcomePopup.hidden) return;
+
+    welcomePopup.hidden = true;
+
+    document.body.style.overflow = '';
+
+    // Não exibe novamente nesta sessão
+    try {
+      sessionStorage.setItem(welcomeStorageKey, '1');
+    } catch (error) {
+      // Continua funcionando caso o armazenamento
+      // do navegador esteja indisponível.
+    }
+
+    if (welcomePreviousFocus?.focus) {
+      welcomePreviousFocus.focus();
+    }
+  }
+
+  // Verifica se já foi fechado nesta sessão
+  let hasSeenWelcome = false;
+
+  try {
+    hasSeenWelcome =
+      sessionStorage.getItem(welcomeStorageKey) === '1';
+  } catch (error) {
+    hasSeenWelcome = false;
+  }
+
+  
+ // Exibe o pop-up após 5 segundos
+ // Apenas na primeira visita da sessão
+ if (!hasSeenWelcome) {
+   setTimeout(() => {
+     // Evita abrir se outro modal estiver ativo
+     const hasOpenOverlay = [
+       '#cart-drawer',
+       '#video-modal',
+       '#pack-flavor-modal'
+     ].some(selector => {
+       const element = document.querySelector(selector);
+       return element && !element.hidden;
+     });
+
+     if (hasOpenOverlay) return;
+
+     welcomePreviousFocus = document.activeElement;
+
+     welcomePopup.hidden = false;
+     document.body.style.overflow = 'hidden';
+
+     closeWelcomeButton.focus();
+   }, 5000);
+ }
+
+
+  // Fecha pelo X
+  closeWelcomeButton.addEventListener(
+    'click',
+    closeWelcomePopup
+  );
+
+  // Fecha quando o visitante clica no CTA
+  welcomeShopButton.addEventListener(
+    'click',
+    closeWelcomePopup
+  );
+
+  // Fecha ao clicar fora do card
+  welcomePopup.addEventListener('click', event => {
+    if (event.target === welcomePopup) {
+      closeWelcomePopup();
+    }
+  });
+
+  // Teclado: Esc e navegação entre os controles
+  document.addEventListener('keydown', event => {
+    if (welcomePopup.hidden) return;
+
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      closeWelcomePopup();
+    }
+
+    if (event.key === 'Tab') {
+      if (
+        event.shiftKey &&
+        document.activeElement === closeWelcomeButton
+      ) {
+        event.preventDefault();
+        welcomeShopButton.focus();
+      } else if (
+        !event.shiftKey &&
+        document.activeElement === welcomeShopButton
+      ) {
+        event.preventDefault();
+        closeWelcomeButton.focus();
+      }
+    }
+  });
+
   const products = {
+
     tasting: {
       name: 'Kit Degustação · 4 sabores', count: null, eyebrow: 'DESTAQUE · KIT DEGUSTAÇÃO',
       title: 'Primeira vez por aqui? Conheça nossos 4 sabores.',
@@ -54,50 +170,163 @@
       footnote: 'A caixa é formada por 5 grupos de 6 garrafas. Você pode repetir os sabores que quiser.', bottles: 5,
     },
   };
-  const productPhotos = {
-  tasting: null,
-  twelve: null,
-  eighteen: null,
-  twentyfour: null,
-  thirty: null
+  
+const productPhotos = {
+  tasting: 'assets/BeUp_Kit_Degustacao_1x1(1).png',
+  twelve: 'assets/BeUp_Pack_12_1x1(1).png',
+  eighteen: 'assets/BeUp_Pack_18_1x1(1).png',
+  twentyfour: 'assets/BeUp_Pack_24_1x1(1).png',
+  thirty: 'assets/BeUp_Pack_30_1x1(1).png'
 };
 
+
+
 let currentProduct = 'tasting';
-  const tabs = $$('.pack-tab');
-  function selectProduct(key, focus = false) {
+
+// Reorganização visual da vitrine
+const featureSection = $('#product-feature');
+const featureMedia = $('#pack-visual');
+const packSelector = featureSection.querySelector('.pack-tabs-block');
+
+const priceElement = $('#pack-price');
+const purchaseButton = $('#add-feature-pack');
+
+// Criamos uma área própria para preço e CTA
+const featurePurchase = document.createElement('div');
+featurePurchase.className = 'product-feature-purchase';
+
+// Movemos os elementos originais, sem duplicá-los
+featurePurchase.append(priceElement, purchaseButton);
+
+// O seletor passa a ficar dentro da imagem
+featureMedia.append(packSelector);
+
+// A área de compra passa a ser uma divisão da vitrine
+featureSection.append(featurePurchase);
+
+
+const tabs = $$('.pack-tab');
+
+// ==========================================
+// CARROSSEL VISUAL DOS PACKS
+// ==========================================
+
+const packOrder = [
+  'tasting',
+  'twelve',
+  'eighteen',
+  'twentyfour',
+  'thirty'
+];
+
+const packImageCarousel = document.createElement('div');
+packImageCarousel.className = 'pack-image-carousel';
+packImageCarousel.setAttribute(
+  'aria-label',
+  'Carrossel de produtos BeUp'
+);
+
+const packImageCards = new Map();
+
+// Cria os cinco cards apenas uma vez
+packOrder.forEach(key => {
+
+  const card = document.createElement('button');
+
+  card.type = 'button';
+  card.className = 'pack-image-card';
+  card.dataset.pack = key;
+  card.tabIndex = -1;
+
+  card.setAttribute(
+    'aria-label',
+    'Selecionar ' + products[key].name
+  );
+
+  const image = document.createElement('img');
+
+  image.src = productPhotos[key];
+  image.alt = products[key].name;
+  image.draggable = false;
+  image.loading = 'eager';
+
+  card.appendChild(image);
+
+  // Também permite selecionar clicando na imagem
+  card.addEventListener('click', () => {
+    selectProduct(key);
+  });
+
+  packImageCards.set(key, card);
+  packImageCarousel.appendChild(card);
+
+});
+
+// Insere o carrossel na área visual da vitrine
+featureMedia.prepend(packImageCarousel);
+
+function updatePackCarousel(key) {
+
+  const activeIndex = packOrder.indexOf(key);
+  const total = packOrder.length;
+
+  packOrder.forEach((packKey, index) => {
+
+    const card = packImageCards.get(packKey);
+
+    // Mantém o carrossel circular
+    const offset =
+      ((index - activeIndex + total + 2) % total) - 2;
+
+    const isActive = offset === 0;
+    const isVisible = Math.abs(offset) <= 1;
+
+    card.style.setProperty('--offset', offset);
+
+    card.classList.toggle('is-active', isActive);
+    card.classList.toggle('is-visible', isVisible);
+
+    card.setAttribute('aria-pressed', String(isActive));
+    card.setAttribute('aria-hidden', String(!isVisible));
+
+  });
+
+  featureMedia.classList.add('has-photo');
+
+}
+
+// Define a posição inicial
+updatePackCarousel(currentProduct);
+
+
+function selectProduct(key, focus = false) {
+
     currentProduct = key;
     const product = products[key];
-    $('#pack-category').textContent = product.eyebrow;
-    $('#pack-title').textContent = product.title;
-    $('#pack-description').textContent = product.description;
-    $('#pack-quantity').textContent = product.quantity;
-    $('#pack-composition').textContent = product.composition;
-    $('#pack-caption').textContent = product.caption;
+    
+$('#pack-category').textContent = product.eyebrow;
+$('#pack-title').textContent = product.title;
+$('#pack-description').textContent = product.description;
+$('#pack-caption').textContent = product.caption;
 
-const photo = $('#pack-photo');
-const visual = $('#pack-visual');
 
-photo.hidden = true;
-visual.classList.remove('has-photo');
-photo.removeAttribute('src');
 
-if (productPhotos[key]) {
-  photo.onload = () => {
-    photo.hidden = false;
-    visual.classList.add('has-photo');
-  };
 
-  photo.onerror = () => {
-    photo.hidden = true;
-    visual.classList.remove('has-photo');
-  };
+// Movimenta o carrossel até o pack selecionado
+updatePackCarousel(key);
+    
 
-  photo.alt = 'Foto do ' + product.name;
-  photo.src = productPhotos[key];
-}
-    $('#pack-price').textContent = '[Preço a definir]';
-    $('#pack-footnote').textContent = product.footnote;
-    $('#add-feature-pack').textContent = ({tasting: 'Quero experimentar →', twelve: 'Escolher meus sabores →', eighteen: 'Montar meu pack →', twentyfour: 'Quero personalizar →', thirty: 'Criar meu pack →'})[key];
+$('#pack-price').textContent = '[Preço a definir]';
+
+$('#add-feature-pack').textContent = ({
+  tasting: 'Quero experimentar →',
+  twelve: 'Escolher meus sabores →',
+  eighteen: 'Montar meu pack →',
+  twentyfour: 'Quero personalizar →',
+  thirty: 'Criar meu pack →'
+})[key];
+
+
     $('#pack-visual').setAttribute('aria-label', 'Ilustração do produto: ' + product.name);
     $('#pack-bottles').replaceChildren(...Array.from({length: product.bottles}, () => {
       let el = document.createElement('div');
@@ -153,9 +382,161 @@ if (productPhotos[key]) {
     });
   });
 
-  const cart = [];
+  
 
-  let toastTimer;
+// Exibe o Kit Degustação ao carregar a vitrine
+selectProduct('tasting');
+
+const cart = [];
+
+// Benefícios ilustrativos.
+
+// Ajuste após a definição comercial das ofertas.
+const benefitTiers = [
+  {
+    min: 6,
+    title: 'Boas-vindas',
+    example: 'Ex.: mimo inicial',
+    icon: '✦'
+  },
+  {
+    min: 12,
+    title: 'Brinde extra',
+    example: 'Ex.: garrafa bônus',
+    icon: '🎁'
+  },
+  {
+    min: 18,
+    title: 'Vantagem especial',
+    example: 'Ex.: desconto adicional',
+    icon: '✧'
+  },
+  {
+    min: 24,
+    title: 'Entrega especial',
+    example: 'Ex.: frete promocional',
+    icon: '✈'
+  },
+  {
+    min: 30,
+    title: 'Presente premium',
+    example: 'Ex.: brinde exclusivo',
+    icon: '★'
+  }
+];
+
+function renderBenefitPanel(panel, bottles, note = '') {
+  if (!panel) return;
+
+  const reached = benefitTiers.filter(tier => bottles >= tier.min);
+  const next = benefitTiers.find(tier => bottles < tier.min);
+
+  const nextMessage = next
+    ? `Faltam ${next.min - bottles} garrafas para a etapa de ${next.min}.`
+    : 'Você atingiu todas as etapas exibidas. Continue montando sua caixa sem limite.';
+
+  const count = panel.querySelector('.benefits-unlock-count');
+  const fill = panel.querySelector('.benefits-unlock-fill');
+  const meter = panel.querySelector('.benefits-unlock-meter');
+  const nextLabel = panel.querySelector('.benefits-unlock-next');
+  let tiers = panel.querySelector('.benefits-unlock-tiers');
+
+  if (!tiers) return;
+
+  if (count) {
+  count.textContent = `${bottles} garrafas · ${reached.length} de ${benefitTiers.length} etapas`;
+}
+
+  const percentage = Math.min(100, (bottles / 30) * 100);
+
+if (fill) {
+  fill.style.width = `${percentage}%`;
+}
+
+if (meter) {
+  meter.setAttribute(
+    'aria-valuenow',
+    String(Math.min(30, bottles))
+  );
+
+  meter.setAttribute(
+    'aria-valuetext',
+    `${bottles} garrafas; ${reached.length} etapas ilustrativas atingidas`
+  );
+}
+
+if (nextLabel) {
+  nextLabel.textContent = note
+    ? `${nextMessage} ${note}`
+    : nextMessage;
+}
+
+  // cria o viewport apenas uma vez
+  if (!tiers.parentElement.classList.contains('benefits-unlock-viewport')) {
+    const viewport = document.createElement('div');
+    viewport.className = 'benefits-unlock-viewport';
+    tiers.before(viewport);
+    viewport.appendChild(tiers);
+  }
+
+  tiers.replaceChildren();
+
+  benefitTiers.forEach(tier => {
+    const achieved = bottles >= tier.min;
+
+    const card = document.createElement('div');
+    card.className =
+      'benefits-unlock-tier' + (achieved ? ' is-reached' : '');
+
+    card.setAttribute(
+      'aria-label',
+      `${tier.min} garrafas: ${tier.title}. ${
+        achieved ? 'Etapa atingida' : 'Etapa pendente'
+      }. Benefício ilustrativo.`
+    );
+
+    const icon = document.createElement('span');
+    icon.className = 'benefits-unlock-icon';
+    icon.textContent = achieved ? '✓' : tier.icon;
+    icon.setAttribute('aria-hidden', 'true');
+
+    const quantity = document.createElement('strong');
+    quantity.textContent = `${tier.min} garrafas`;
+
+    const title = document.createElement('span');
+    title.className = 'benefits-unlock-tier-title';
+    title.textContent = tier.title;
+
+    const example = document.createElement('small');
+    example.textContent = tier.example;
+
+    card.append(icon, quantity, title, example);
+    tiers.append(card);
+  });
+
+  // MOBILE: mostra 2 cards e desliza 1 card por vez
+  const isMobile = window.matchMedia('(max-width: 768px)').matches;
+  const startIndex = isMobile
+    ? Math.min(reached.length, benefitTiers.length - 2)
+    : 0;
+
+  tiers.style.setProperty('--benefit-slide', String(startIndex));
+}
+
+function featuredBenefitCopy(bottles) {
+  if (!bottles) {
+    return 'Kit Degustação: quantidade a confirmar. Benefícios ainda não definidos.';
+  }
+
+  const reached = benefitTiers.filter(
+    tier => bottles >= tier.min
+  ).length;
+
+  return `${bottles} garrafas: ${reached} de ${benefitTiers.length} etapas ilustrativas atingidas. Brindes e condições a confirmar.`;
+}
+
+let toastTimer;
+
   function toast(message) {
     const el = $('#toast');
     el.textContent = message; el.hidden = false;
@@ -163,10 +544,30 @@ if (productPhotos[key]) {
     toastTimer = setTimeout(() => el.hidden = true, 2600);
   }
   function renderCart() {
-    const totalBoxes = cart.reduce((sum, item) => sum + item.qty, 0);
-    const knownBottles = cart.reduce((sum, item) => sum + (item.bottles ?? 0) * item.qty, 0);
-    const unresolved = cart.some(item => item.bottles === null);
-    $('#cart-count').textContent = String(totalBoxes);
+    
+const totalBoxes = cart.reduce(
+  (sum, item) => sum + item.qty, 0
+);
+
+const knownBottles = cart.reduce(
+  (sum, item) => sum + (item.bottles ?? 0) * item.qty, 0
+);
+
+const unresolved = cart.some(
+  item => item.bottles === null
+);
+
+// Atualiza a régua com o total do carrinho
+renderBenefitPanel(
+  $('#cart-benefits'),
+  knownBottles,
+  unresolved
+    ? 'O Kit Degustação sem quantidade definida não entra nessa soma.'
+    : ''
+);
+
+$('#cart-count').textContent = String(totalBoxes);
+
     $('#cart-list').replaceChildren();
     if (!cart.length) {
       const empty = document.createElement('p');
@@ -188,11 +589,22 @@ if (productPhotos[key]) {
     $('#cart-total-label').textContent = !totalBoxes ? 'Seu próximo favorito está a um clique.' : totalBoxes + (totalBoxes === 1 ? ' caixa' : ' caixas') + ' · ' + knownBottles + ' garrafas confirmadas' + (unresolved ? ' + Kit Degustação (composição pendente)' : '') + ' · preços a definir';
     $('#checkout').disabled = totalBoxes === 0;
   }
-  function addToCart(name, bottles) {
+  
+function addToCart(name, bottles) {
     const item = cart.find(row => row.name === name);
-    if (item) item.qty++; else cart.push({name, bottles, qty:1});
-    renderCart(); toast('Adicionado: ' + name);
-  }
+
+    if (item) {
+        item.qty++;
+    } else {
+        cart.push({name, bottles, qty:1});
+    }
+
+    renderCart();
+
+    // Abre automaticamente o carrinho lateral direito
+    openOverlay(drawer);
+}
+
   $('#add-feature-pack').addEventListener('click', () => {
     const product = products[currentProduct];
     if (currentProduct === 'tasting') {
@@ -212,18 +624,17 @@ if (productPhotos[key]) {
     pendingPack = products[key];
     pendingCounts = new Map(flavors.map(flavor => [flavor, 0]));
     const groups = pendingPack.count / 6;
-    $('#flavor-modal-title').textContent = 'Escolha os sabores do pack de ' + pendingPack.count;
-    $('#flavor-modal-intro').textContent = groups + (groups === 1 ? ' grupo fechado de 6 garrafas. ' : ' grupos fechados de 6 garrafas. ') + 'Escolha a quantidade de cada sabor usando + e −. Você pode repetir sabores e deve completar exatamente ' + pendingPack.count + ' garrafas.';
+    $('#flavor-modal-title').textContent =
+    'Personalize seu pack de ' + pendingPack.count;
     $('#pack-flavor-options').replaceChildren();
     flavors.forEach(flavor => {
       const row = document.createElement('div'); row.className = 'pack-flavor-option'; row.dataset.flavor = flavor;
       const name = document.createElement('div');
       const title = document.createElement('strong'); title.textContent = flavor;
-      const description = document.createElement('small'); description.dataset.role = 'detail'; description.textContent = '0 garrafas selecionadas';
-      name.append(title, description);
+      name.append(title);
       const stepper = document.createElement('div'); stepper.className = 'pack-flavor-stepper';
       const minus = document.createElement('button'); minus.type = 'button'; minus.textContent = '−'; minus.dataset.role = 'minus'; minus.setAttribute('aria-label', 'Remover 6 garrafas de ' + flavor);
-      const output = document.createElement('output'); output.dataset.role = 'value'; output.setAttribute('aria-label', 'Packs de 6 de ' + flavor); output.textContent = '0';
+      const output = document.createElement('output'); output.dataset.role = 'value'; output.setAttribute('aria-label', 'Garrafas de ' + flavor); output.textContent = '0';
       const plus = document.createElement('button'); plus.type = 'button'; plus.textContent = '+'; plus.dataset.role = 'plus'; plus.setAttribute('aria-label', 'Adicionar 6 garrafas de ' + flavor);
       minus.addEventListener('click', () => { pendingCounts.set(flavor, Math.max(0, pendingCounts.get(flavor) - 1)); syncPackFlavorChooser(); });
       plus.addEventListener('click', () => { if (selectedPackGroups() < groups) pendingCounts.set(flavor, pendingCounts.get(flavor) + 1); syncPackFlavorChooser(); });
@@ -233,38 +644,69 @@ if (productPhotos[key]) {
     openOverlay(packFlavorModal);
   }
   function selectedPackGroups() { return [...pendingCounts.values()].reduce((sum, n) => sum+n, 0); }
-  function syncPackFlavorChooser() {
-    if (!pendingPack) return;
-    const groups = pendingPack.count / 6;
-    const selected = selectedPackGroups();
-    const missing = groups - selected;
-    $$('.pack-flavor-option').forEach(row => {
-      const flavor = row.dataset.flavor;
-      const n = pendingCounts.get(flavor);
-      row.querySelector('[data-role="value"]').textContent = n;
-      row.querySelector('[data-role="detail"]').textContent = n === 0 ? '0 garrafas selecionadas' : n*6 + ' garrafas · ' + n + (n === 1 ? ' grupo de 6' : ' grupos de 6');
-      row.querySelector('[data-role="minus"]').disabled = n === 0;
-      row.querySelector('[data-role="plus"]').disabled = selected >= groups;
-      row.classList.toggle('is-picked', n > 0);
-    });
-    $('#flavor-modal-progress').textContent = selected + ' de ' + groups + ' grupos escolhidos';
-    $('#flavor-modal-bottle-count').textContent = (selected*6) + '/' + pendingPack.count + ' garrafas';
-    $('#flavor-progress-segments').replaceChildren(...Array.from({length:groups}, (_, i) => {
+  
+
+function syncPackFlavorChooser() {
+
+  if (!pendingPack) return;
+
+  const groups = pendingPack.count / 6;
+  const selected = selectedPackGroups();
+  const bottles = selected * 6;
+
+  // Atualiza os benefícios
+  renderBenefitPanel(
+    $('#pack-benefits'),
+    bottles
+  );
+
+  // Atualiza os sabores
+  $$('.pack-flavor-option').forEach(row => {
+
+    const flavor = row.dataset.flavor;
+    const n = pendingCounts.get(flavor);
+
+    row.querySelector('[data-role="value"]')
+      .textContent = n * 6;
+
+    row.querySelector('[data-role="minus"]')
+      .disabled = n === 0;
+
+    row.querySelector('[data-role="plus"]')
+      .disabled = selected >= groups;
+
+    row.classList.toggle('is-picked', n > 0);
+
+  });
+
+  // Contador único
+  $('#flavor-modal-bottle-count').textContent =
+    bottles + ' de ' + pendingPack.count + ' garrafas';
+
+  // Barra de progresso
+  $('#flavor-progress-segments').replaceChildren(
+    ...Array.from({ length: groups }, (_, i) => {
+
       const piece = document.createElement('span');
-      if (i < selected) piece.className = 'filled';
+
+      if (i < selected) {
+        piece.className = 'filled';
+      }
+
       return piece;
-    }));
-    const selectedFlavors = flavors.filter(f => pendingCounts.get(f) > 0);
-    $('#flavor-modal-summary').textContent = selectedFlavors.length
-      ? selectedFlavors.map(f => f + ' × ' + (pendingCounts.get(f)*6)).join(' · ')
-      : 'Escolha os sabores para completar sua caixa.';
-    $('#flavor-modal-hint').textContent = missing > 0
-      ? 'Faltam ' + missing + (missing === 1 ? ' grupo de 6 garrafas' : ' grupos de 6 garrafas') + ' para completar seu pack.'
-      : 'Pack completo! Confira os sabores e confirme abaixo.';
-    const confirm = $('#confirm-pack-flavors');
-    confirm.disabled = missing !== 0;
-    confirm.textContent = missing === 0 ? 'Confirmar e adicionar ' + pendingPack.count + ' garrafas →' : 'Escolha mais ' + missing + (missing === 1 ? ' grupo' : ' grupos');
-  }
+
+    })
+  );
+
+  // Libera a compra somente com o pack completo
+  const confirm = $('#confirm-pack-flavors');
+
+  confirm.disabled = selected !== groups;
+
+  confirm.textContent = 'Adicionar ao carrinho →';
+
+}
+
   $('#confirm-pack-flavors').addEventListener('click', () => {
     if (!pendingPack || selectedPackGroups()*6 !== pendingPack.count) return;
     const composition = flavors.filter(f => pendingCounts.get(f) > 0)
@@ -275,7 +717,6 @@ if (productPhotos[key]) {
     addToCart(name, count);
   });
   $('#close-pack-flavors').addEventListener('click', closeOverlays);
-  $('#cancel-pack-flavors').addEventListener('click', closeOverlays);
   const packQty = new Map(flavors.map(flavor => [flavor, 0]));
 
 const flavorMeta = {
@@ -377,19 +818,52 @@ function buildKitOptions() {
       syncKit();
     });
 
-    stepper.append(minus, countWrap, plus);
-    action.append(addButton, stepper);
+    
+stepper.append(minus, countWrap, plus);
+action.append(addButton, stepper);
 
-    row.append(thumb, info, action);
-    container.append(row);
+// Botão para remover todo o sabor de uma vez
+const removeButton = document.createElement('button');
+removeButton.type = 'button';
+removeButton.className = 'kit-remove-button';
+removeButton.dataset.role = 'remove';
+removeButton.hidden = true;
+
+removeButton.setAttribute(
+  'aria-label',
+  'Remover todas as garrafas de ' + flavor
+);
+
+removeButton.innerHTML = `
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M4 7h16M10 4h4M6 7l1 13h10l1-13M10 11v6M14 11v6"/>
+  </svg>
+`;
+
+removeButton.addEventListener('click', () => {
+  packQty.set(flavor, 0);
+  syncKit();
+});
+
+row.append(thumb, info, action, removeButton);
+container.append(row);
+
   });
 }
+
 
 function syncKit() {
   const packs = totalPacks();
   const bottles = packs * 6;
 
+  // Atualiza os benefícios conforme os sabores escolhidos
+  renderBenefitPanel(
+    $('#kit-benefits'),
+    bottles
+  );
+
   $$('.kit-flavor-card').forEach(row => {
+
     const flavor = row.dataset.flavor;
     const qty = packQty.get(flavor);
     const selected = qty > 0;
@@ -406,20 +880,20 @@ function syncKit() {
       ? qty + (qty === 1 ? ' pack selecionado · ' : ' packs selecionados · ') + (qty * 6) + ' garrafas'
       : 'Cada adição equivale a 6 garrafas';
 
-    addButton.hidden = selected;
-    stepper.hidden = !selected;
-    minus.disabled = !selected;
-    output.textContent = String(qty * 6 || 6);
+    
+addButton.hidden = selected;
+stepper.hidden = !selected;
+minus.disabled = !selected;
+output.textContent = String(qty * 6 || 6);
+
+// Exibe o botão de remover somente quando selecionado
+row.querySelector('[data-role="remove"]').hidden = !selected;
+
   });
 
   const selectedFlavors = flavors.filter(flavor => packQty.get(flavor) > 0);
 
-  $('#kit-selection-status').textContent = selectedFlavors.length
-    ? 'Escolha os sabores (' + bottles + ' garrafas)'
-    : 'Escolha os sabores (0 garrafas)';
-
   $('#kit-quantity').textContent = String(bottles);
-  $('#kit-packs').textContent = packs + (packs === 1 ? ' pack de 6' : ' packs de 6');
 
   $('#kit-description').textContent = selectedFlavors.length
     ? selectedFlavors.map(flavor => flavor + ': ' + (packQty.get(flavor) * 6) + ' garrafas').join(' · ')
@@ -520,187 +994,31 @@ socialTabs.forEach((tab, index) => {
 });
 
 
+  
+  // MENU MOBILE — ATIVAÇÃO SOMENTE POR CLIQUE
+
   const navItems = $$('.mobile-nav-item');
-  const navDestinations = ['inicio','produtos','monte-kit','social'];
+
   function activateNav(id) {
     navItems.forEach(link => {
       const active = link.dataset.nav === id;
+
       link.classList.toggle('is-active', active);
-      if (active) link.setAttribute('aria-current', 'page'); else link.removeAttribute('aria-current');
-    });
-  }
-  navItems.forEach(link => link.addEventListener('click', () => activateNav(link.dataset.nav)));
-  if ('IntersectionObserver' in window) {
-    const observed = navDestinations.map(id => $('#' + id)).filter(Boolean);
-    const observer = new IntersectionObserver(entries => {
-      const candidates = entries.filter(e => e.isIntersecting).sort((a,b) => a.boundingClientRect.top - b.boundingClientRect.top);
-      if (candidates.length) activateNav(candidates[0].target.id);
-    }, { rootMargin:'-10% 0px -55% 0px', threshold:0 });
-    observed.forEach(section => observer.observe(section));
-  }
-  
-  // Seção 06 — Lifestyle
-  const lifestyleMoments = {
-    rotina: {
-      category: 'NO SEU DIA A DIA',
-      title: 'Cabe na rotina. Combina com você.',
-      description: 'Entre os compromissos e os planos do dia, tem sempre um momento para seu sabor favorito.',
-      labels: [
-        '[Foto principal: produto na rotina]',
-        '[Foto: momento de consumo]',
-        '[Foto: cotidiano]'
-      ],
-      photos: [
-  'assets/lifestyle/rotina-principal.webp',
-  'assets/lifestyle/rotina-consumo.webp',
-  'assets/lifestyle/rotina-cotidiano.webp'
-]
-    },
-
-    treino: {
-      category: 'NO SEU RITMO',
-      title: 'Do movimento à próxima conquista.',
-      description: 'Um sabor para acompanhar seus momentos de atividade, sem complicar sua escolha.',
-      labels: [
-        '[Foto principal: pessoa com o suco após treino]',
-        '[Foto: movimento]',
-        '[Foto: atividade ao ar livre]'
-      ],
-      photos: [
-  'assets/lifestyle/rotina-principal.webp',
-  'assets/lifestyle/rotina-consumo.webp',
-  'assets/lifestyle/rotina-cotidiano.webp'
-]
-    },
-
-    pausa: {
-      category: 'UM TEMPO PRA VOCÊ',
-      title: 'Pequenas pausas. Bons momentos.',
-      description: 'Quando o dia pede uma pausa, seu sabor favorito também pode fazer parte dela.',
-      labels: [
-        '[Foto principal: pessoa fazendo uma pausa]',
-        '[Foto: suco sobre uma mesa]',
-        '[Foto: momento de descanso]'
-      ],
-      photos: [
-  'assets/lifestyle/rotina-principal.webp',
-  'assets/lifestyle/rotina-consumo.webp',
-  'assets/lifestyle/rotina-cotidiano.webp'
-]
-    },
-
-    lazer: {
-      category: 'COM QUEM VOCÊ GOSTA',
-      title: 'Mais encontros. Mais histórias.',
-      description: 'No passeio, no encontro com amigos ou naquele fim de tarde sem pressa.',
-      labels: [
-        '[Foto principal: amigos com o suco]',
-        '[Foto: passeio]',
-        '[Foto: momento compartilhado]'
-      ],
-      photos: [
-  'assets/lifestyle/rotina-principal.webp',
-  'assets/lifestyle/rotina-consumo.webp',
-  'assets/lifestyle/rotina-cotidiano.webp'
-]
-    }
-  };
-
-  const lifestyleTabs = $$('.lifestyle-tab');
-
-  function selectLifestyleMoment(moment, focus = false) {
-    const data = lifestyleMoments[moment];
-    if (!data) return;
-
-    $('#life-story-category').textContent = data.category;
-    $('#life-story-title').textContent = data.title;
-    $('#life-story-description').textContent = data.description;
-
-    const labels = [
-      '#life-label-main',
-      '#life-label-secondary',
-      '#life-label-tertiary'
-    ];
-
-    const images = [
-      '#life-image-main',
-      '#life-image-secondary',
-      '#life-image-tertiary'
-    ];
-
-    labels.forEach((selector, index) => {
-      $(selector).textContent = data.labels[index];
-
-      const image = $(images[index]);
-      image.hidden = true;
-      image.removeAttribute('src');
-
-      if (data.photos[index]) {
-        image.onload = () => {
-          image.hidden = false;
-        };
-
-        image.onerror = () => {
-          image.hidden = true;
-        };
-
-        image.alt = data.labels[index]
-          .replaceAll('[', '')
-          .replaceAll(']', '');
-
-        image.src = data.photos[index];
-      }
-    });
-
-    lifestyleTabs.forEach(tab => {
-      const active = tab.dataset.moment === moment;
-
-      tab.classList.toggle('is-active', active);
-      tab.setAttribute('aria-selected', String(active));
-      tab.tabIndex = active ? 0 : -1;
 
       if (active) {
-        $('#lifestyle-panel')
-          .setAttribute('aria-labelledby', tab.id);
+        link.setAttribute('aria-current', 'page');
+      } else {
+        link.removeAttribute('aria-current');
       }
     });
-
-    if (focus) {
-      lifestyleTabs
-        .find(tab => tab.dataset.moment === moment)
-        ?.focus();
-    }
   }
 
-  lifestyleTabs.forEach((tab, index) => {
-    tab.addEventListener('click', () => {
-      selectLifestyleMoment(tab.dataset.moment);
-    });
-
-    tab.addEventListener('keydown', event => {
-      if (!['ArrowRight', 'ArrowLeft', 'Home', 'End']
-        .includes(event.key)) return;
-
-      event.preventDefault();
-
-      const next = event.key === 'Home'
-        ? 0
-        : event.key === 'End'
-          ? lifestyleTabs.length - 1
-          : (
-              index +
-              (event.key === 'ArrowRight' ? 1 : -1) +
-              lifestyleTabs.length
-            ) % lifestyleTabs.length;
-
-      selectLifestyleMoment(
-        lifestyleTabs[next].dataset.moment,
-        true
-      );
+  // A animação é acionada exclusivamente pelo clique.
+  navItems.forEach(link => {
+    link.addEventListener('click', () => {
+      activateNav(link.dataset.nav);
     });
   });
-
-  selectLifestyleMoment('rotina');
 
   renderCart();
 })();
