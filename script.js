@@ -265,7 +265,8 @@ packOrder.forEach(key => {
 // Insere o carrossel na área visual da vitrine
 featureMedia.prepend(packImageCarousel);
 
-function updatePackCarousel(key) {
+
+function paintPackCarousel(key, drag = 0) {
 
   const activeIndex = packOrder.indexOf(key);
   const total = packOrder.length;
@@ -274,14 +275,66 @@ function updatePackCarousel(key) {
 
     const card = packImageCards.get(packKey);
 
-    // Mantém o carrossel circular
+    const offset =
+      ((index - activeIndex + total + 2) % total) - 2;
+
+    const position = offset + drag;
+    const distance = Math.abs(position);
+
+    const previous =
+      card.style.getPropertyValue('--offset');
+
+    const wrap = previous !== '' &&
+      Math.abs(Number(previous) - position) > 2.5;
+
+    // Evita que os cards atravessem a tela
+    // ao completar uma volta no carrossel.
+
+    if (wrap) card.style.transition = 'none';
+
+    card.style.setProperty('--offset', position);
+
+    card.style.setProperty(
+      '--card-scale',
+      1 - Math.min(distance, 1) * .22
+    );
+
+    card.style.setProperty(
+  '--card-opacity',
+  distance <= 1
+    ? 1
+    : Math.max(0, 2 - distance)
+);
+
+    card.style.setProperty(
+      '--card-layer',
+      Math.round(100 - distance * 20)
+    );
+
+    if (wrap) {
+      card.getBoundingClientRect();
+      card.style.removeProperty('transition');
+    }
+
+  });
+}
+
+function updatePackCarousel(key) {
+
+  paintPackCarousel(key);
+
+  const activeIndex = packOrder.indexOf(key);
+  const total = packOrder.length;
+
+  packOrder.forEach((packKey, index) => {
+
+    const card = packImageCards.get(packKey);
+
     const offset =
       ((index - activeIndex + total + 2) % total) - 2;
 
     const isActive = offset === 0;
     const isVisible = Math.abs(offset) <= 1;
-
-    card.style.setProperty('--offset', offset);
 
     card.classList.toggle('is-active', isActive);
     card.classList.toggle('is-visible', isVisible);
@@ -292,66 +345,145 @@ function updatePackCarousel(key) {
   });
 
   featureMedia.classList.add('has-photo');
-
 }
 
-// Navegação por gestos no carrossel de packs
+// Arraste contínuo com dedo ou mouse
 
-let packTouchStart = null;
+let packGesture = null;
 let suppressPackClickUntil = 0;
 
-packImageCarousel.addEventListener('touchstart', event => {
+packImageCarousel.addEventListener('pointerdown', event => {
 
-  if (event.touches.length !== 1) {
-    packTouchStart = null;
-    return;
-  }
+  if (!event.isPrimary || event.button !== 0) return;
 
-  packTouchStart = {
-    x: event.touches[0].clientX,
-    y: event.touches[0].clientY
+  suppressPackClickUntil = 0;
+
+  packGesture = {
+    id: event.pointerId,
+    x: event.clientX,
+    y: event.clientY,
+    time: performance.now(),
+    step: Math.max(
+      1,
+      packImageCards.get(currentProduct).offsetWidth * .86
+    ),
+    dragging: false
   };
 
-}, { passive: true });
-
-packImageCarousel.addEventListener('touchend', event => {
-
-  if (!packTouchStart) return;
-
-  const touch = event.changedTouches[0];
-
-  const deltaX = touch.clientX - packTouchStart.x;
-  const deltaY = touch.clientY - packTouchStart.y;
-
-  packTouchStart = null;
-
-  // Ignora toques simples e rolagens verticais
-  if (
-    Math.abs(deltaX) < 45 ||
-    Math.abs(deltaX) <= Math.abs(deltaY) * 1.3
-  ) return;
-
-  const direction = deltaX < 0 ? 1 : -1;
-
-  const currentIndex = packOrder.indexOf(currentProduct);
-
-  const nextIndex = (
-    currentIndex +
-    direction +
-    packOrder.length
-  ) % packOrder.length;
-
-  suppressPackClickUntil = performance.now() + 400;
-
-  selectProduct(packOrder[nextIndex]);
-
-}, { passive: true });
-
-packImageCarousel.addEventListener('touchcancel', () => {
-  packTouchStart = null;
 });
 
-// Evita cliques acidentais após deslizar
+packImageCarousel.addEventListener('pointermove', event => {
+
+  const gesture = packGesture;
+
+  if (!gesture || event.pointerId !== gesture.id) return;
+
+  const dx = event.clientX - gesture.x;
+  const dy = event.clientY - gesture.y;
+
+  if (!gesture.dragging) {
+
+    if (Math.max(Math.abs(dx), Math.abs(dy)) < 7) return;
+
+    // Preserva a rolagem vertical da página
+
+    if (Math.abs(dy) >= Math.abs(dx)) {
+      packGesture = null;
+      return;
+    }
+
+    gesture.dragging = true;
+
+    packImageCarousel.classList.add('is-dragging');
+
+    packImageCarousel.setPointerCapture(event.pointerId);
+
+  }
+
+  const progress = Math.max(
+    -1,
+    Math.min(1, dx / gesture.step)
+  );
+
+  paintPackCarousel(currentProduct, progress);
+
+});
+
+// Finaliza o gesto e encaixa o próximo pack
+
+function finishPackGesture(event, cancelled = false) {
+
+  const gesture = packGesture;
+
+  if (!gesture || event.pointerId !== gesture.id) return;
+
+  packGesture = null;
+
+  if (!gesture.dragging) return;
+
+  const dx = event.clientX - gesture.x;
+
+  const elapsed = Math.max(
+    1,
+    performance.now() - gesture.time
+  );
+
+  const fastSwipe =
+    Math.abs(dx) >= 20 &&
+    Math.abs(dx) / elapsed > .45;
+
+  const shouldChange = !cancelled && (
+    Math.abs(dx) >= gesture.step * .22 || fastSwipe
+  );
+
+  packImageCarousel.classList.remove('is-dragging');
+
+  suppressPackClickUntil = performance.now() + 350;
+
+  if (shouldChange) {
+
+    const direction = dx < 0 ? 1 : -1;
+
+    const index = packOrder.indexOf(currentProduct);
+
+    const nextIndex = (
+      index + direction + packOrder.length
+    ) % packOrder.length;
+
+    selectProduct(packOrder[nextIndex]);
+
+  } else {
+
+    updatePackCarousel(currentProduct);
+
+  }
+}
+
+packImageCarousel.addEventListener('pointerup', event => {
+  finishPackGesture(event);
+});
+
+packImageCarousel.addEventListener('pointercancel', event => {
+  finishPackGesture(event, true);
+});
+
+packImageCarousel.addEventListener('lostpointercapture', event => {
+
+  if (event.target === packImageCarousel) {
+    finishPackGesture(event, true);
+  }
+
+});
+
+packImageCarousel.addEventListener('pointerleave', event => {
+
+  if (packGesture && !packGesture.dragging) {
+    finishPackGesture(event, true);
+  }
+
+});
+
+// Impede cliques acidentais depois do arraste
 
 packImageCarousel.addEventListener('click', event => {
 
@@ -367,6 +499,7 @@ packImageCarousel.addEventListener('click', event => {
 
 // Define a posição inicial
 updatePackCarousel(currentProduct);
+
 
 
 function selectProduct(key, focus = false) {

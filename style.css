@@ -3967,8 +3967,8 @@ body {
   /* Vitrine de packs */
 
   .device:not(.mobile) #produtos {
-    background: #F5F5F7;
-    padding-inline: var(--desktop-gutter);
+  background: #FFFFFF;
+  padding-inline: var(--desktop-gutter);
   }
 
   /* Evita somar margens no conteúdo dos packs */
@@ -7848,41 +7848,153 @@ transform: none;
 }
 
 
+
 /* =========================================
-   BEUP — CARROSSEL VISUAL DOS PACKS
+   BEUP — VITRINE DE PACKS
    ========================================= */
 
-/* Organiza o carrossel e o seletor */
+#produtos {
+  padding-block: clamp(48px, 5vw, 85px);
+  background: #FFFFFF;
+  border-top: 0;
+}
 
-#produtos #pack-visual {
+/* Estrutura vertical da vitrine */
+
+#produtos #product-feature {
   display: grid;
 
   grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: minmax(0, 1fr) auto;
+  grid-template-rows: auto auto auto;
 
-  align-items: stretch;
-  justify-content: stretch;
+  grid-template-areas:
+    "copy"
+    "media"
+    "purchase";
 
-  padding: 16px 0 20px;
-  gap: 16px;
+  width: 100%;
+  height: auto;
+  min-height: 0;
 
-  background: #F5F5F7;
+  gap: 0;
+
+  background: #FFFFFF;
+  border: none;
+  border-radius: 0;
   overflow: hidden;
 }
 
-/* Desativa a imagem individual antiga */
+/* Título e descrição */
 
-#produtos #pack-photo {
+#produtos .product-feature-copy {
+  grid-area: copy;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  height: auto;
+  min-height: 0;
+
+  padding: 0 20px 12px;
+
+  background: transparent;
+  text-align: center;
+}
+
+/* Etiqueta do pack */
+
+#produtos .feature-eyebrow {
+  align-self: center;
+
+  background: #F0E7FA;
+  border: none;
+  color: #6C2B99;
+
+  padding: 8px 15px;
+  border-radius: 999px;
+
+  font-size: 10px;
+  font-weight: 750;
+}
+
+/* Título */
+
+#produtos #pack-title {
+  display: grid;
+  place-items: center;
+
+  max-width: 850px;
+  min-height: 2.2em;
+
+  margin: 16px auto 8px;
+
+  font-size: clamp(30px, 3.2vw, 46px);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -.045em;
+
+  color: #252525;
+  text-align: center;
+  text-wrap: balance;
+}
+
+/* Descrição */
+
+#produtos #pack-description {
+  max-width: 580px;
+  min-height: 3em;
+
+  margin: 0 auto;
+
+  font-size: 14px;
+  line-height: 1.5;
+  color: #737373;
+  text-align: center;
+}
+
+/* Área dos produtos */
+
+#produtos #pack-visual {
+  grid-area: media;
+
+  position: relative;
+  display: grid;
+
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto auto;
+
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  min-width: 0;
+
+  padding: 0;
+  gap: 0;
+
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  overflow: hidden;
+}
+
+/* Oculta as antigas representações */
+
+#produtos #pack-photo,
+#produtos #pack-bottles,
+#produtos #pack-caption {
   display: none !important;
 }
 
-/* Área de movimentação */
+/* Carrossel de produtos */
 
 .pack-image-carousel {
   position: relative;
 
   width: 100%;
-  height: 100%;
+  height: clamp(365px, 37vw, 420px);
   min-height: 0;
 
   overflow: hidden;
@@ -7891,9 +8003,11 @@ transform: none;
   touch-action: pan-y pinch-zoom;
   user-select: none;
   -webkit-user-select: none;
+
+  cursor: grab;
 }
 
-/* Card individual */
+/* Cada imagem é o próprio card */
 
 .pack-image-card {
   --offset: 0;
@@ -7902,41 +8016,39 @@ transform: none;
   top: 50%;
   left: 50%;
 
-  width: min(400px, 62%);
-  height: auto;
-  aspect-ratio: 1 / 1;
+  width: auto;
+  height: 100%;
+  aspect-ratio: 2 / 3;
 
   display: block;
 
-  padding: 8px;
+  padding: 0;
   margin: 0;
 
-  background: #FFFFFF;
-  border: 1px solid #E6E6EC;
-  border-radius: 22px;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
 
-  box-shadow: 0 14px 32px rgba(0,0,0,.12);
+  transform: translate(
+    calc(-50% + var(--offset) * 86%),
+    -50%
+  );
 
-  transform:
-    translate(
-      calc(-50% + var(--offset) * 86%),
-      -50%
-    )
-    scale(.78);
+  opacity: var(--card-opacity, 0);
+  z-index: var(--card-layer, 1);
 
-  opacity: 0;
-  z-index: 1;
   pointer-events: none;
+  cursor: grab;
 
   transition:
-    transform .55s cubic-bezier(.22, 1, .36, 1),
-    opacity .4s ease,
-    box-shadow .4s ease;
+    transform .28s cubic-bezier(.22, 1, .36, 1),
+    opacity .24s ease;
 
   will-change: transform, opacity;
 }
 
-/* Imagem dentro da box */
+/* PNG sem caixas adicionais */
 
 .pack-image-card img {
   display: block;
@@ -7945,249 +8057,262 @@ transform: none;
   height: 100%;
 
   object-fit: contain;
-  border-radius: 14px;
+  object-position: center;
+
+  background: transparent;
+  border: none;
+  border-radius: 0;
 
   user-select: none;
+  -webkit-user-drag: none;
 }
 
-/* Cards laterais */
+/* Cards visíveis */
 
 .pack-image-card.is-visible {
-  opacity: .85;
-  z-index: 2;
+  opacity: var(--card-opacity, 1);
+  z-index: var(--card-layer, 2);
   pointer-events: auto;
 }
 
-/* Card selecionado — destaque central */
+/* Produto selecionado */
 
 .pack-image-card.is-active {
-  transform: translate(-50%, -50%) scale(1);
-
-  opacity: 1;
-  z-index: 5;
+  z-index: var(--card-layer, 5);
   pointer-events: auto;
-
-  box-shadow: 0 16px 36px rgba(0,0,0,.16);
 }
 
-/* Seletor fica abaixo do carrossel */
+/* Movimento natural durante o swipe */
+
+.pack-image-carousel.is-dragging,
+.pack-image-carousel.is-dragging .pack-image-card {
+  cursor: grabbing;
+}
+
+.pack-image-carousel.is-dragging .pack-image-card {
+  transition: none;
+}
+
+/* =========================================
+   SELETOR MINIMALISTA
+   ========================================= */
 
 #produtos #pack-visual .pack-tabs-block {
   position: relative;
-
   inset: auto;
 
-  width: auto;
+  width: 100%;
+  max-width: none;
   height: auto;
   max-height: none;
 
-  margin: 0 20px;
+  margin: 0;
+  padding: 0 12px 12px;
+
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 
   overflow: visible;
 }
 
-
-/* =========================================
-   CARROSSEL DOS PACKS — MOBILE
-   ========================================= */
-
-@media (max-width: 768px) {
-
-  #produtos #product-feature {
-    grid-template-rows: auto auto auto;
-
-    height: auto;
-    min-height: 0;
-  }
-
-  #produtos #pack-visual {
-    grid-template-rows: auto auto;
-
-    height: auto;
-    min-height: 0;
-
-    padding: 0 0 12px;
-    gap: 12px;
-  }
-
-  .pack-image-carousel {
-    height: clamp(240px, 75vw, 290px);
-  }
-
-  .pack-image-card {
-    width: min(240px, 70%);
-
-    padding: 6px;
-    border-radius: 16px;
-  }
-
-  .pack-image-card img {
-    border-radius: 10px;
-  }
-
-  #produtos #pack-visual .pack-tabs-block {
-    margin: 0 12px;
-  }
-
-}
-
-/* Acessibilidade — respeita movimento reduzido */
-
-@media (prefers-reduced-motion: reduce) {
-
-  .pack-image-card {
-    transition: none;
-  }
-
-}
-
-
-/* =========================================
-   BEUP — SELETOR GLASSMORPHISM
-   ========================================= */
-
-/* Box de vidro translúcido */
-
-#produtos #pack-visual .pack-tabs-block {
-  background: rgba(255, 255, 255, .48);
-
-  border: 1px solid rgba(255, 255, 255, .85);
-
-  backdrop-filter: blur(24px) saturate(140%);
-  -webkit-backdrop-filter: blur(24px) saturate(140%);
-
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, .08),
-    inset 0 1px 0 rgba(255, 255, 255, .8);
-
-  color: #252525;
-}
-
-/* Título do seletor */
-
 #produtos #pack-visual .pack-tabs-intro {
-  color: #252525;
+  display: none;
 }
 
-/* Packs não selecionados */
+#produtos #pack-visual .pack-carousel {
+  display: block;
+  width: 100%;
+}
+
+#produtos #pack-visual .pack-carousel-arrow {
+  display: none;
+}
+
+#produtos #pack-visual .pack-tabs {
+  display: flex;
+  flex-wrap: wrap;
+
+  justify-content: center;
+  align-items: center;
+
+  width: 100%;
+  gap: 8px;
+  padding: 0;
+
+  overflow: visible;
+}
+
+/* Botões de seleção */
 
 #produtos #pack-visual .pack-tab {
-  background: rgba(255, 255, 255, .55);
-  border: 1px solid rgba(0, 0, 0, .10);
-  color: #252525;
+  display: inline-flex;
+  flex: 0 0 auto;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+
+  width: auto;
+  min-width: 0;
+  min-height: 36px;
+  height: 36px;
+
+  padding: 0 16px;
+  margin: 0;
+
+  background: #F5F5F7;
+  border: 1px solid #EEEEEE;
+  border-radius: 999px;
+
+  color: #737373;
+
+  box-shadow: none;
+  transform: none;
 
   transition:
     background .25s ease,
-    border-color .25s ease,
-    color .25s ease;
+    color .25s ease,
+    border-color .25s ease;
 }
 
-#produtos #pack-visual .pack-tab:hover {
-  background: rgba(255, 255, 255, .95);
-}
-
-/* Pack selecionado */
-
-#produtos #pack-visual .pack-tab.active {
-  background: #252525;
-  border-color: #252525;
-  color: #FFFFFF;
-
-  box-shadow: 0 4px 12px rgba(0, 0, 0, .12);
-}
-
-#produtos #pack-visual .pack-tab.active:hover {
-  background: #000000;
-  border-color: #000000;
+#produtos #pack-visual .pack-tab-image,
+#produtos #pack-visual .pack-tab-meta {
+  display: none;
 }
 
 #produtos #pack-visual .pack-tab-label {
+  font-size: 11px;
+  font-weight: 650;
   color: inherit;
 }
 
-#produtos #pack-visual .pack-tab.active .pack-tab-label {
+#produtos #pack-visual .pack-tab:hover {
+  background: #EDE4F6;
+  color: #6C2B99;
+}
+
+#produtos #pack-visual .pack-tab.active,
+#produtos #pack-visual .pack-tab.active:hover {
+  background: #6C2B99;
+  border-color: #6C2B99;
   color: #FFFFFF;
 }
 
-/* Nota do seletor */
-
-#produtos #pack-visual .pack-tabs-block .small-note {
-  color: #626262;
-}
-
-
 /* =========================================
-   BEUP — PREÇO E CTA
-   Desktop à esquerda | Mobile centralizado
+   PREÇO E BOTÃO DE COMPRA
    ========================================= */
 
 #produtos .product-feature-purchase {
-  align-items: flex-start;
-  justify-content: flex-start;
-  text-align: left;
-  gap: 16px;
+  grid-area: purchase;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 14px;
+  padding: 16px 20px 0;
+
+  background: transparent;
+  text-align: center;
 }
 
-/* Preço preto */
-
-#produtos .product-feature-purchase #pack-price {
-  color: #000000;
+#produtos #pack-price {
+  color: #252525;
   font-size: 24px;
   font-weight: 800;
-  text-align: left;
   margin: 0;
+  text-align: center;
 }
 
-/* CTA roxo */
-
 #produtos .product-feature-purchase #add-feature-pack {
-  background: #9155FF;
-  border: 1px solid #9155FF;
-  color: #FFFFFF;
+  align-self: center;
 
   min-height: 50px;
-  padding: 14px 28px;
+  padding: 14px 32px;
 
+  background: #6C2B99;
+  border: 1px solid #6C2B99;
   border-radius: 999px;
 
-  justify-content: center;
-  text-align: center;
-  align-self: flex-start;
+  color: #FFFFFF;
 
   transition:
     background .25s ease,
-    border-color .25s ease,
-    transform .25s ease;
+    border-color .25s ease;
 }
 
 #produtos .product-feature-purchase #add-feature-pack:hover {
-  background: #6D28D9;
-  border-color: #6D28D9;
+  background: #542078;
+  border-color: #542078;
 }
 
-/* AJUSTES MOBILE */
+/* =========================================
+   VITRINE — MOBILE
+   ========================================= */
 
 @media (max-width: 768px) {
 
-  #produtos .product-feature-purchase {
-    align-items: center;
-    justify-content: center;
-    text-align: center;
+  #produtos {
+    padding-block: 42px;
   }
 
-  #produtos .product-feature-purchase #pack-price {
+  #produtos .product-feature-copy {
+    padding: 0 24px 4px;
+  }
+
+  #produtos #pack-title {
+    font-size: clamp(25px, 7vw, 34px);
+    min-height: 3.3em;
+  }
+
+  #produtos #pack-description {
+    max-width: 330px;
+    min-height: 5.5em;
+    font-size: 13px;
+  }
+
+  .pack-image-carousel {
+    height: clamp(260px, 92vw, 350px);
+  }
+
+  #produtos #pack-visual .pack-tabs {
+    gap: 6px;
+  }
+
+  #produtos #pack-visual .pack-tab {
+    padding: 0 11px;
+    min-height: 34px;
+    height: 34px;
+  }
+
+  #produtos #pack-visual .pack-tab-label {
+    font-size: 10px;
+  }
+
+  #produtos #pack-price {
     font-size: 22px;
-    text-align: center;
   }
 
   #produtos .product-feature-purchase #add-feature-pack {
     width: 100%;
     max-width: 280px;
     min-height: 48px;
-    align-self: center;
   }
-
 }
+
+/* Acessibilidade */
+
+@media (prefers-reduced-motion: reduce) {
+  .pack-image-card {
+    transition: none;
+  }
+}
+
 
 /* SEÇÃO 04 — ÍCONES ROXOS */
 
@@ -8198,62 +8323,5 @@ transform: none;
 
 #dor .pain-topic-icon svg {
   stroke: #FFFFFF;
-}
-
-
-/* =========================================
-   VITRINE — ALINHAMENTO DOS TEXTOS
-   Desktop à esquerda | Mobile centralizado
-   ========================================= */
-
-#produtos .product-feature-copy {
-  align-items: flex-start;
-  justify-content: center;
-  text-align: left;
-}
-
-/* Título do pack */
-
-#produtos .product-feature-copy h3 {
-  text-align: left;
-  margin-inline: 0;
-}
-
-/* Descrição do pack */
-
-#produtos .feature-description {
-  text-align: left;
-  margin-inline: 0;
-}
-
-/* Etiqueta acima do título */
-
-#produtos .feature-eyebrow {
-  align-self: flex-start;
-}
-
-/* Mobile */
-
-@media (max-width: 768px) {
-
-  #produtos .product-feature-copy {
-    align-items: center;
-    text-align: center;
-  }
-
-  #produtos .product-feature-copy h3 {
-    text-align: center;
-    margin-inline: auto;
-  }
-
-  #produtos .feature-description {
-    text-align: center;
-    margin-inline: auto;
-  }
-
-  #produtos .feature-eyebrow {
-    align-self: center;
-  }
-
 }
 
