@@ -89,23 +89,28 @@
     <section class="section hero" id="hero">
   <div class="hero-copy">
 
-    <h1>Proteína que combina com o seu ritmo.</h1>
+  <span class="hero-promo-tag">
+    OFERTA DE LANÇAMENTO
+  </span>
 
-    <p class="lead">
-      Dias corridos, planos diferentes, momentos só seus.
-      Conheça nossos quatro sabores e escolha como levar
-      o seu suco proteico.
-    </p>
+  <h1>Gosto de suco de verdade. Vantagens de sobra!</h1>
 
-    <div class="hero-actions">
-      <a class="btn" href="#produtos">
-        Conhecer os sabores →
-      </a>
-      <a class="btn outline" href="#monte-kit">
-        Monte seu kit
-      </a>
-    </div>
+  <p class="lead">
+    Conheça os quatro sabores da BE.UP,
+    escolha seu pack e aproveite as
+    condições especiais de lançamento.
+  </p>
+
+  <div class="hero-actions">
+    <a class="btn" href="#produtos">
+      Aproveitar oferta →
+    </a>
+    <a class="btn outline" href="#monte-kit">
+      Monte seu kit
+    </a>
   </div>
+
+</div>
 </section>
     <!-- 03 product showcase / circular tabs -->
     <section class="section products" id="produtos">
@@ -336,66 +341,77 @@
   </div>
 </section>
 
-    <!-- 05 benefits -->
     
 <section class="section" id="beneficios">
 
   <div class="benefits-header">
-    <div class="benefits-heading">
-      <span class="benefits-tag">05 · Benefícios</span>
 
+    <div class="benefits-heading">
       <h2>
-        Menos complicação.<br>
-        Mais possibilidades.
+        Sabor de verdade.<br>
+        Nutrição de sobra.
       </h2>
     </div>
 
     <p class="benefits-intro">
-      A gente simplificou a escolha: descubra os sabores,
-      combine seus favoritos e encontre o pack que faz
-      sentido para você.
+      Tudo que você espera de um suco refrescante,
+      com os diferenciais de uma bebida proteica.
     </p>
+
   </div>
 
   <div class="benefits-grid">
 
     <article class="benefit">
       <div>
-        <h3>Escolha simples</h3>
+        <strong class="benefit-value">20g</strong>
+
+        <h3>De proteína</h3>
+
         <p>
-          Encontre seu pack sem ficar procurando
-          entre dezenas de opções.
+          Uma maneira prática e saborosa de incluir
+          proteína na sua rotina.
         </p>
       </div>
-      <span class="benefit-number" aria-hidden="true">01 / 03</span>
     </article>
 
     <article class="benefit">
       <div>
-        <h3>Do seu jeito</h3>
+        <strong class="benefit-value">3g</strong>
+
+        <h3>De BCAA</h3>
+
         <p>
-          São quatro sabores para conhecer,
-          combinar e repetir como você preferir.
+          Aminoácidos essenciais para complementar
+          sua alimentação.
         </p>
       </div>
-      <span class="benefit-number" aria-hidden="true">02 / 03</span>
     </article>
 
     <article class="benefit">
       <div>
-        <h3>Tudo às claras</h3>
+        <strong class="benefit-value">Zero</strong>
+
+        <h3>Açúcar adicionado</h3>
+
         <p>
-          Veja a quantidade de garrafas e a
-          composição da caixa antes de confirmar.
+          Todo o prazer de um suco refrescante,
+          sem adição de açúcar.
         </p>
       </div>
-      <span class="benefit-number" aria-hidden="true">03 / 03</span>
     </article>
 
   </div>
 
+  <p class="benefits-nutrition-note">
+    Informações nutricionais provisórias,
+    sujeitas à confirmação.
+  </p>
+
 </section>
 
+
+<!-- 06 lifestyle -->
     
 <section class="section lifestyle" id="lifestyle">
   <div class="lifestyle-shell">
@@ -719,25 +735,36 @@
 
 </div>
 
-  <!-- Texto sobreposto às fotografias -->
-  <div class="brand-story-content">
+  <!-- Propósito da BE.UP -->
+<div class="brand-story-content">
 
-    <span class="brand-story-eyebrow">
-      09 · SOBRE A MARCA
-    </span>
+  <span class="brand-story-eyebrow">
+    NOSSO PROPÓSITO
+  </span>
 
-    <h2 id="brand-story-title">
-      Por trás de cada gole,<br>
-      tem gente de verdade.
-    </h2>
+  <h2 id="brand-story-title">
+    Cuidar de você pode ser<br>
+    mais gostoso.
+  </h2>
 
-    <p>
-      Conheça as pessoas que estão construindo
-      uma forma mais simples e cheia de sabor
-      de incluir proteína na rotina.
-    </p>
+  <p>
+    A BE.UP acredita que cuidar de si não precisa
+    ser complicado, sem graça ou fora da sua rotina.
+  </p>
 
-  </div>
+  <p>
+    Nosso propósito é transformar a forma como você
+    consome proteína, unindo o gosto de um suco
+    de verdade à praticidade que o seu dia pede.
+    Queremos fazer parte dos seus momentos, das
+    pequenas pausas às grandes conquistas.
+  </p>
+
+  <strong class="brand-story-signature">
+    Mais sabor. Mais liberdade. Mais você.
+  </strong>
+
+</div>
 
 </section>
 
@@ -941,12 +968,35 @@
 
   <div class="benefits-unlock-tiers"></div>
 
-  <p class="benefits-unlock-next" aria-live="polite"></p>
-
 </section>
 
+<!-- Acrescentar produtos diretamente no carrinho -->
+
+<div class="cart-extra">
+  <strong>Que tal levar mais?</strong>
+
+  <p>
+    Acrescente seus sabores favoritos de 6 em 6.
+  </p>
+
+  <div class="cart-extra-actions">
+
+    <select id="cart-extra-flavor"
+            aria-label="Escolha um sabor adicional">
+    </select>
+
+    <button type="button"
+            class="btn small"
+            id="cart-add-extra">
+      + 6 garrafas
+    </button>
+
+  </div>
+</div>
+
 <div class="cart-list" id="cart-list"></div>
-<div class="cart-foot"><p id="cart-total-label">Seu próximo favorito está a um clique.</p><button class="btn" id="checkout">Ir para o pagamento →</button></div></aside>
+<div class="cart-foot">
+<button class="btn" id="checkout">Ir para o pagamento →</button></div></aside>
 <div class="modal" id="video-modal" role="dialog" aria-modal="true" aria-labelledby="video-title" hidden><div class="modal-panel"><div class="modal-head"><h2 id="video-title">Vídeo demonstrativo</h2><button class="x-button" id="close-video" aria-label="Fechar vídeo">×</button></div><div class="wire-image modal-video"><span class="play-icon">▶</span><span class="placeholder-text">[Vídeo real será incorporado aqui]</span></div><p>Área reservada para um vídeo gravado com o produto. Nenhum vídeo de cliente foi disponibilizado ainda.</p><button class="btn outline" id="done-video">Voltar à Home</button></div></div>
 
 <div class="modal"

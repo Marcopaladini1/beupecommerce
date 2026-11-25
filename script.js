@@ -132,7 +132,7 @@
     tasting: {
       name: 'Kit Degustação · 4 sabores', count: null, eyebrow: 'DESTAQUE · KIT DEGUSTAÇÃO',
       title: 'Primeira vez por aqui? Conheça nossos 4 sabores.',
-      description: 'Descubra os sabores da marca e encontre aquele que combina mais com você.',
+      description: 'Gosto de suco de verdade em quatro sabores. Experimente todos e descubra seu favorito.',
       quantity: '4 sabores', composition: 'Composição a confirmar',
       caption: '[Imagem do Kit Degustação · 4 sabores]',
       footnote: 'A quantidade total de garrafas do Kit Degustação ainda será definida.', bottles: 4,
@@ -294,6 +294,76 @@ function updatePackCarousel(key) {
   featureMedia.classList.add('has-photo');
 
 }
+
+// Navegação por gestos no carrossel de packs
+
+let packTouchStart = null;
+let suppressPackClickUntil = 0;
+
+packImageCarousel.addEventListener('touchstart', event => {
+
+  if (event.touches.length !== 1) {
+    packTouchStart = null;
+    return;
+  }
+
+  packTouchStart = {
+    x: event.touches[0].clientX,
+    y: event.touches[0].clientY
+  };
+
+}, { passive: true });
+
+packImageCarousel.addEventListener('touchend', event => {
+
+  if (!packTouchStart) return;
+
+  const touch = event.changedTouches[0];
+
+  const deltaX = touch.clientX - packTouchStart.x;
+  const deltaY = touch.clientY - packTouchStart.y;
+
+  packTouchStart = null;
+
+  // Ignora toques simples e rolagens verticais
+  if (
+    Math.abs(deltaX) < 45 ||
+    Math.abs(deltaX) <= Math.abs(deltaY) * 1.3
+  ) return;
+
+  const direction = deltaX < 0 ? 1 : -1;
+
+  const currentIndex = packOrder.indexOf(currentProduct);
+
+  const nextIndex = (
+    currentIndex +
+    direction +
+    packOrder.length
+  ) % packOrder.length;
+
+  suppressPackClickUntil = performance.now() + 400;
+
+  selectProduct(packOrder[nextIndex]);
+
+}, { passive: true });
+
+packImageCarousel.addEventListener('touchcancel', () => {
+  packTouchStart = null;
+});
+
+// Evita cliques acidentais após deslizar
+
+packImageCarousel.addEventListener('click', event => {
+
+  if (
+    event.detail !== 0 &&
+    performance.now() < suppressPackClickUntil
+  ) {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
+}, true);
 
 // Define a posição inicial
 updatePackCarousel(currentProduct);
@@ -581,28 +651,45 @@ $('#cart-count').textContent = String(totalBoxes);
         const small = document.createElement('small');
         small.textContent = item.qty + (item.qty === 1 ? ' caixa · ' : ' caixas · ') + (item.bottles === null ? 'quantidade de garrafas a confirmar' : (item.bottles * item.qty) + ' garrafas');
         info.append(name, small);
-        const remove = document.createElement('button'); remove.className = 'remove-btn'; remove.type = 'button'; remove.textContent = 'Remover';
-        remove.addEventListener('click', () => { cart.splice(index, 1); renderCart(); });
+        const remove = document.createElement('button');
+remove.className = 'remove-btn';
+remove.type = 'button';
+remove.setAttribute('aria-label', 'Remover item do carrinho');
+remove.setAttribute('title', 'Remover item');
+
+remove.innerHTML = `
+  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+    <path d="M9 3h6l1 2h4v2H4V5h4l1-2zm1 6h2v8h-2V9zm4 0h2v8h-2V9zM7 9h2v8H7V9zm1 12h8a2 2 0 0 0 2-2V7H6v12a2 2 0 0 0 2 2z"/>
+  </svg>
+`;
+
+remove.addEventListener('click', () => {
+  cart.splice(index, 1);
+  renderCart();
+});
         row.append(info, remove); $('#cart-list').append(row);
       });
     }
-    $('#cart-total-label').textContent = !totalBoxes ? 'Seu próximo favorito está a um clique.' : totalBoxes + (totalBoxes === 1 ? ' caixa' : ' caixas') + ' · ' + knownBottles + ' garrafas confirmadas' + (unresolved ? ' + Kit Degustação (composição pendente)' : '') + ' · preços a definir';
     $('#checkout').disabled = totalBoxes === 0;
   }
   
 function addToCart(name, bottles) {
-    const item = cart.find(row => row.name === name);
 
-    if (item) {
-        item.qty++;
-    } else {
-        cart.push({name, bottles, qty:1});
-    }
+  const item = cart.find(row => row.name === name);
 
-    renderCart();
+  if (item) {
+    item.qty++;
+  } else {
+    cart.push({name, bottles, qty: 1});
+  }
 
-    // Abre automaticamente o carrinho lateral direito
+  renderCart();
+
+  // Abre somente se o carrinho estiver fechado
+  if (drawer.hidden) {
     openOverlay(drawer);
+  }
+
 }
 
   $('#add-feature-pack').addEventListener('click', () => {
@@ -616,6 +703,29 @@ function addToCart(name, bottles) {
 
   // "Monte seu kit": cada sabor pode ter qualquer quantidade de grupos fechados de 6.
   const flavors = ['Sabor 01','Sabor 02','Sabor 03','Sabor 04'];
+
+// Adicionar sabores diretamente pelo carrinho
+
+const cartExtraFlavor = $('#cart-extra-flavor');
+
+flavors.forEach(flavor => {
+  const option = document.createElement('option');
+
+  option.value = flavor;
+  option.textContent = flavor;
+
+  cartExtraFlavor.appendChild(option);
+});
+
+$('#cart-add-extra').addEventListener('click', () => {
+
+  const flavor = cartExtraFlavor.value;
+
+  if (!flavors.includes(flavor)) return;
+
+  addToCart('Pack extra de 6 · ' + flavor, 6);
+
+});
   // Packs da vitrine: o cliente deve completar todas as posições de 6 antes de adicionar.
   const packFlavorModal = $('#pack-flavor-modal');
   let pendingPack = null;
