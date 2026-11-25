@@ -376,6 +376,10 @@ a {
   margin: 0 0 20px;
 }
 
+.hero-mobile-break {
+  display: none;
+}
+
 .hero .lead {
   font-size: 15px;
   color: #666;
@@ -5181,6 +5185,12 @@ body {
   margin: 0 auto 18px;
 
   font-size: clamp(28px, 8.5vw, 48px);
+  line-height: 1.04;
+  text-wrap: nowrap;
+}
+
+#hero .hero-mobile-break {
+  display: inline;
 }
 
 /* Descrição */
