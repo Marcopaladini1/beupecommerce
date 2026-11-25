@@ -83,10 +83,25 @@
 </a>
 
       <nav class="nav" aria-label="Navegação principal desktop"><a href="#produtos">Packs</a><a href="#beneficios">Benefícios</a><a href="#monte-kit">Monte seu kit</a><a href="#social">Avaliações</a><a href="#sobre">Nossa história</a></nav>
-      <button type="button" class="cart-btn" id="open-cart" aria-label="Abrir carrinho"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M3 5h2l2.2 11h11L21 8H6"/><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg><span class="cart-label">Carrinho</span> <span id="cart-count" class="cart-count">0</span></button>
-    </header>
-    <!-- 02 hero -->
-    <section class="section hero" id="hero">
+    <button type="button"
+        class="cart-btn login-btn"
+        id="open-login"
+        aria-label="Entrar na minha conta">
+
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <circle cx="12" cy="8" r="4"/>
+    <path d="M4 21v-2a8 8 0 0 1 16 0v2"/>
+  </svg>
+
+    <span>Login</span>
+
+</button>
+
+</header>
+
+<!-- 02 hero -->
+
+<section class="section hero" id="hero">
   <div class="hero-copy">
 
   <span class="hero-promo-tag">
@@ -540,19 +555,9 @@
         </div>
       </div>
 
-      <div class="kit-checkout-box">
-        <div class="kit-feedback" id="kit-feedback" aria-live="polite">
-          Selecione um sabor: ele começa com 6 garrafas. Depois ajuste no + ou −, sem limite máximo.
-        </div>
-
-        <button class="btn" id="add-kit" disabled>
-          Adicionar ao carrinho
-        </button>
-
-        <small class="kit-limit-help">
-          * Não há seleção de unidades avulsas. Para provar os quatro sabores, veja o Kit Degustação na vitrine.
-        </small>
-      </div>
+      <small class="kit-limit-help">
+  * Não há seleção de unidades avulsas. Para provar os quatro sabores, veja o Kit Degustação na vitrine.
+</small>
     </div>
 
   </div>
@@ -890,6 +895,8 @@
 <p>Seu ritmo. Seus sabores. Sua escolha.</p></div><div><h4>Comprar</h4><a href="#produtos">Produtos</a><a href="#monte-kit">Monte seu kit</a></div><div><h4>Institucional</h4><a href="#sobre">Sobre a marca</a><a href="#faq">Perguntas frequentes</a></div><div><h4>Ajuda</h4><p>[Atendimento]</p><p>[Entrega / trocas]</p><p>[Políticas legais]</p></div></div>
     
 
+</footer>
+
 <nav class="mobile-bottom" aria-label="Navegação principal mobile">
 
   
@@ -921,20 +928,77 @@
     <span class="mobile-nav-label">Monte kit</span>
   </a>
 
-  <a class="mobile-nav-item"
-     href="#social" data-nav="social"
-     aria-label="Avaliações">
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d="m12 2.5 3.2 6.5 7.1 1.05-5.15 5.02 1.21 7.08L12 18.8 5.64 22.15l1.22-7.08L1.7 10.05 8.8 9Z"/>
-    </svg>
-    <span class="mobile-nav-label">Avaliações</span>
-  </a>
+  <button class="mobile-nav-item"
+        type="button"
+        id="open-cart-mobile"
+        aria-label="Abrir carrinho"
+        aria-haspopup="dialog"
+        aria-controls="cart-drawer">
+
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M3 5h2l2.2 11h11L21 8H6"/>
+    <circle cx="9" cy="20" r="1"/>
+    <circle cx="18" cy="20" r="1"/>
+  </svg>
+
+  <span id="cart-count-mobile"
+        class="mobile-cart-count">0</span>
+
+</button>
 
 </nav>
 
 
   </div>
 </div>
+
+<!-- Carrinho flutuante desktop -->
+
+<button type="button"
+        class="cart-btn"
+        id="open-cart"
+        aria-label="Abrir carrinho"
+        aria-haspopup="dialog"
+        aria-controls="cart-drawer">
+
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M3 5h2l2.2 11h11L21 8H6"/>
+    <circle cx="9" cy="20" r="1"/>
+    <circle cx="18" cy="20" r="1"/>
+  </svg>
+
+  <span class="cart-label">Carrinho</span>
+
+  <span id="cart-count" class="cart-count">0</span>
+
+</button>
+
+<aside class="kit-price-widget"
+       id="kit-price-widget"
+       aria-label="Estimativa do pedido"
+       hidden>
+
+  <div class="price-line">
+    <span>Total com sua seleção</span>
+    <strong id="kit-price-total" aria-live="polite">
+      R$ 0,00
+    </strong>
+  </div>
+
+  <div class="kit-price-detail">
+    <span>No carrinho</span>
+    <span id="kit-price-confirmed">R$ 0,00</span>
+  </div>
+
+  <div class="kit-price-detail">
+    <span>Kit em montagem</span>
+    <span id="kit-price-pending">R$ 0,00</span>
+  </div>
+
+  <small class="price-note">Valores provisórios</small>
+
+</aside>
+
 <div class="scrim" id="scrim" hidden></div>
 <aside class="cart-drawer" id="cart-drawer" role="dialog" aria-modal="true" aria-labelledby="cart-title" hidden><div class="drawer-top"><h2 id="cart-title">Meu carrinho</h2><button class="x-button" id="close-cart" type="button" aria-label="Fechar carrinho">
   &times;
@@ -979,23 +1043,25 @@
     Acrescente seus sabores favoritos de 6 em 6.
   </p>
 
-  <div class="cart-extra-actions">
-
-    <select id="cart-extra-flavor"
-            aria-label="Escolha um sabor adicional">
-    </select>
-
-    <button type="button"
-            class="btn small"
-            id="cart-add-extra">
-      + 6 garrafas
-    </button>
-
-  </div>
+  <div class="cart-extra-actions"
+     id="cart-extra-flavors"
+     aria-label="Adicionar sabores ao carrinho">
+</div>
 </div>
 
 <div class="cart-list" id="cart-list"></div>
 <div class="cart-foot">
+
+  <div class="price-line">
+    <span>Subtotal dos produtos</span>
+    <strong id="cart-total-price" aria-live="polite">
+      R$ 0,00
+    </strong>
+  </div>
+
+  <small class="price-note">
+    Valores provisórios. Frete não incluso.
+  </small>
 <button class="btn" id="checkout">Ir para o pagamento →</button></div></aside>
 <div class="modal" id="video-modal" role="dialog" aria-modal="true" aria-labelledby="video-title" hidden><div class="modal-panel"><div class="modal-head"><h2 id="video-title">Vídeo demonstrativo</h2><button class="x-button" id="close-video" aria-label="Fechar vídeo">×</button></div><div class="wire-image modal-video"><span class="play-icon">▶</span><span class="placeholder-text">[Vídeo real será incorporado aqui]</span></div><p>Área reservada para um vídeo gravado com o produto. Nenhum vídeo de cliente foi disponibilizado ainda.</p><button class="btn outline" id="done-video">Voltar à Home</button></div></div>
 
@@ -1072,7 +1138,14 @@
 
     <!-- CTA -->
 
-    <div class="flavor-modal-actions">
+    <div class="price-line">
+  <span>Valor do pack</span>
+  <strong id="pack-modal-price">R$ 0,00</strong>
+</div>
+
+<small class="price-note">Valor provisório</small>
+
+<div class="flavor-modal-actions">
 
       <button type="button"
               class="btn"

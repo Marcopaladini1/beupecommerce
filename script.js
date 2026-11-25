@@ -181,6 +181,26 @@ const productPhotos = {
 
 
 
+// PREÇOS DOS PRODUTOS — VALORES EM CENTAVOS
+
+const prices = {
+  groupOfSix: 100,
+  tasting: 100
+};
+
+const currency = new Intl.NumberFormat('pt-BR', {
+  style: 'currency',
+  currency: 'BRL'
+});
+
+const formatPrice = cents => currency.format(cents / 100);
+
+function priceForBottles(bottles) {
+  return bottles === null
+    ? prices.tasting
+    : (bottles / 6) * prices.groupOfSix;
+}
+
 let currentProduct = 'tasting';
 
 // Reorganização visual da vitrine
@@ -312,9 +332,12 @@ function paintPackCarousel(key, drag = 0) {
     );
 
     if (wrap) {
-      card.getBoundingClientRect();
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
       card.style.removeProperty('transition');
-    }
+    });
+  });
+}
 
   });
 }
@@ -351,6 +374,9 @@ function updatePackCarousel(key) {
 
 let packGesture = null;
 let suppressPackClickUntil = 0;
+
+let packAnimationFrame = null;
+let packDragProgress = 0;
 
 packImageCarousel.addEventListener('pointerdown', event => {
 
@@ -405,7 +431,24 @@ packImageCarousel.addEventListener('pointermove', event => {
     Math.min(1, dx / gesture.step)
   );
 
-  paintPackCarousel(currentProduct, progress);
+  packDragProgress = progress;
+
+if (packAnimationFrame === null) {
+
+  packAnimationFrame = requestAnimationFrame(() => {
+
+    packAnimationFrame = null;
+
+    if (!packGesture?.dragging) return;
+
+    paintPackCarousel(
+      currentProduct,
+      packDragProgress
+    );
+
+  });
+
+}
 
 });
 
@@ -419,7 +462,12 @@ function finishPackGesture(event, cancelled = false) {
 
   packGesture = null;
 
-  if (!gesture.dragging) return;
+if (packAnimationFrame !== null) {
+  cancelAnimationFrame(packAnimationFrame);
+  packAnimationFrame = null;
+}
+
+if (!gesture.dragging) return;
 
   const dx = event.clientX - gesture.x;
 
@@ -519,7 +567,8 @@ $('#pack-caption').textContent = product.caption;
 updatePackCarousel(key);
     
 
-$('#pack-price').textContent = '[Preço a definir]';
+$('#pack-price').textContent =
+  formatPrice(priceForBottles(product.count)) + ' · provisório';
 
 $('#add-feature-pack').textContent = ({
   tasting: 'Quero experimentar →',
@@ -531,11 +580,7 @@ $('#add-feature-pack').textContent = ({
 
 
     $('#pack-visual').setAttribute('aria-label', 'Ilustração do produto: ' + product.name);
-    $('#pack-bottles').replaceChildren(...Array.from({length: product.bottles}, () => {
-      let el = document.createElement('div');
-      el.className = 'bottle-drawing';
-      return el;
-    }));
+    
     tabs.forEach(tab => {
       const active = tab.dataset.pack === key;
       tab.classList.toggle('active', active);
@@ -591,6 +636,12 @@ $('#add-feature-pack').textContent = ({
 selectProduct('tasting');
 
 const cart = [];
+
+const cartTotalCents = () => cart.reduce(
+  (sum, item) =>
+    sum + priceForBottles(item.bottles) * item.qty,
+  0
+);
 
 // Benefícios ilustrativos.
 
@@ -674,7 +725,38 @@ if (nextLabel) {
     : nextMessage;
 }
 
-  // cria o viewport apenas uma vez
+  // No carrinho, mostra apenas os benefícios liberados
+
+if (panel.id === 'cart-benefits') {
+
+  tiers.replaceChildren();
+
+  if (!reached.length) {
+
+    const empty = document.createElement('span');
+    empty.className = 'cart-benefit-empty';
+    empty.textContent = 'Nenhum benefício liberado ainda.';
+    tiers.append(empty);
+
+  } else {
+
+    reached.forEach(tier => {
+
+      const chip = document.createElement('span');
+      chip.className = 'cart-benefit-chip';
+      chip.textContent = '✓ ' + tier.title;
+
+      tiers.append(chip);
+
+    });
+
+  }
+
+  return;
+}
+
+// cria o viewport apenas uma vez
+
   if (!tiers.parentElement.classList.contains('benefits-unlock-viewport')) {
     const viewport = document.createElement('div');
     viewport.className = 'benefits-unlock-viewport';
@@ -717,13 +799,21 @@ if (nextLabel) {
     tiers.append(card);
   });
 
-  // MOBILE: mostra 2 cards e desliza 1 card por vez
-  const isMobile = window.matchMedia('(max-width: 768px)').matches;
-  const startIndex = isMobile
-    ? Math.min(reached.length, benefitTiers.length - 2)
-    : 0;
+  // MOBILE: mantém o último benefício conquistado visível
 
-  tiers.style.setProperty('--benefit-slide', String(startIndex));
+const isMobile = window.matchMedia('(max-width: 768px)').matches;
+
+const startIndex = isMobile
+  ? Math.min(
+      Math.max(0, reached.length - 1),
+      benefitTiers.length - 2
+    )
+  : 0;
+
+tiers.style.setProperty(
+  '--benefit-slide',
+  String(startIndex)
+);
 }
 
 function featuredBenefitCopy(bottles) {
@@ -770,6 +860,7 @@ renderBenefitPanel(
 );
 
 $('#cart-count').textContent = String(totalBoxes);
+$('#cart-count-mobile').textContent = String(totalBoxes);
 
     $('#cart-list').replaceChildren();
     if (!cart.length) {
@@ -783,7 +874,15 @@ $('#cart-count').textContent = String(totalBoxes);
         const name = document.createElement('strong'); name.textContent = item.name;
         const small = document.createElement('small');
         small.textContent = item.qty + (item.qty === 1 ? ' caixa · ' : ' caixas · ') + (item.bottles === null ? 'quantidade de garrafas a confirmar' : (item.bottles * item.qty) + ' garrafas');
-        info.append(name, small);
+        const price = document.createElement('span');
+
+price.className = 'cart-item-price';
+
+price.textContent = formatPrice(
+  priceForBottles(item.bottles) * item.qty
+);
+
+info.append(name, small, price);
         const remove = document.createElement('button');
 remove.className = 'remove-btn';
 remove.type = 'button';
@@ -804,9 +903,14 @@ remove.addEventListener('click', () => {
       });
     }
     $('#checkout').disabled = totalBoxes === 0;
+
+$('#cart-total-price').textContent =
+  formatPrice(cartTotalCents());
+
+updateKitPriceWidget();
   }
   
-function addToCart(name, bottles) {
+function addToCart(name, bottles, openCart = true) {
 
   const item = cart.find(row => row.name === name);
 
@@ -818,8 +922,7 @@ function addToCart(name, bottles) {
 
   renderCart();
 
-  // Abre somente se o carrinho estiver fechado
-  if (drawer.hidden) {
+  if (openCart && drawer.hidden) {
     openOverlay(drawer);
   }
 
@@ -839,24 +942,32 @@ function addToCart(name, bottles) {
 
 // Adicionar sabores diretamente pelo carrinho
 
-const cartExtraFlavor = $('#cart-extra-flavor');
+const cartExtraFlavors = $('#cart-extra-flavors');
 
 flavors.forEach(flavor => {
-  const option = document.createElement('option');
 
-  option.value = flavor;
-  option.textContent = flavor;
+  const row = document.createElement('div');
+  row.className = 'cart-extra-row';
 
-  cartExtraFlavor.appendChild(option);
-});
+  const label = document.createElement('span');
+  label.textContent = flavor;
 
-$('#cart-add-extra').addEventListener('click', () => {
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'btn small';
+  button.textContent = '+ 6 garrafas';
 
-  const flavor = cartExtraFlavor.value;
+  button.setAttribute(
+    'aria-label',
+    'Adicionar 6 garrafas de ' + flavor
+  );
 
-  if (!flavors.includes(flavor)) return;
+  button.addEventListener('click', () => {
+    addToCart('Pack extra de 6 · ' + flavor, 6, false);
+  });
 
-  addToCart('Pack extra de 6 · ' + flavor, 6);
+  row.append(label, button);
+  cartExtraFlavors.append(row);
 
 });
   // Packs da vitrine: o cliente deve completar todas as posições de 6 antes de adicionar.
@@ -924,7 +1035,10 @@ function syncPackFlavorChooser() {
 
   // Contador único
   $('#flavor-modal-bottle-count').textContent =
-    bottles + ' de ' + pendingPack.count + ' garrafas';
+  bottles + ' de ' + pendingPack.count + ' garrafas';
+
+$('#pack-modal-price').textContent =
+  formatPrice(priceForBottles(pendingPack.count));
 
   // Barra de progresso
   $('#flavor-progress-segments').replaceChildren(
@@ -971,6 +1085,57 @@ const flavorMeta = {
 
 const totalPacks = () => [...packQty.values()].reduce((sum, qty) => sum + qty, 0);
 
+// WIDGET DE PREÇO — MONTE SEU KIT
+
+const kitPriceWidget = $('#kit-price-widget');
+
+let kitPriceInView = false;
+
+function updateKitPriceWidget() {
+
+  const pending = totalPacks() * prices.groupOfSix;
+
+  const confirmed = cartTotalCents();
+
+  $('#kit-price-pending').textContent =
+    formatPrice(pending);
+
+  $('#kit-price-confirmed').textContent =
+    formatPrice(confirmed);
+
+  $('#kit-price-total').textContent =
+    formatPrice(pending + confirmed);
+
+  kitPriceWidget.hidden =
+    !kitPriceInView ||
+    pending + confirmed === 0 ||
+    !$('#scrim').hidden;
+
+}
+
+function addCurrentKitToCart(openCart = true) {
+  const count = totalPacks() * 6;
+  if (!count) return;
+
+  const combination = flavors
+    .filter(flavor => packQty.get(flavor) > 0)
+    .map(flavor => flavor + ' × ' + (packQty.get(flavor) * 6))
+    .join(', ');
+
+  addToCart(
+    'Monte seu kit · ' + count + ' garrafas (' + combination + ')',
+    count,
+    openCart
+  );
+
+  flavors.forEach(flavor => packQty.set(flavor, 0));
+  syncKit();
+
+  if (!openCart) {
+    toast(count + ' garrafas adicionadas ao carrinho!');
+  }
+}
+
 function buildKitOptions() {
   const container = $('#kit-options');
   container.replaceChildren();
@@ -1003,67 +1168,76 @@ function buildKitOptions() {
     ingredients.textContent = 'INGREDIENTES';
 
     const note = document.createElement('small');
-    note.className = 'kit-flavor-note';
-    note.dataset.role = 'flavor-note';
-    note.textContent = 'Cada adição equivale a 6 garrafas';
+note.className = 'kit-flavor-note';
+note.dataset.role = 'flavor-note';
+note.innerHTML = 'Cada adição equivale a<br>6 garrafas';
 
-    info.append(title, ingredients, note);
+info.append(title, ingredients, note);
 
-    const action = document.createElement('div');
-    action.className = 'kit-flavor-action';
+const action = document.createElement('div');
+action.className = 'kit-flavor-action';
 
-    const addButton = document.createElement('button');
-    addButton.type = 'button';
-    addButton.className = 'kit-add-button';
-    addButton.dataset.role = 'add';
-    addButton.textContent = 'Adicionar';
-    addButton.setAttribute('aria-label', 'Adicionar 6 garrafas de ' + flavor);
-    addButton.addEventListener('click', () => {
-      packQty.set(flavor, 1);
-      syncKit();
-    });
+const stepper = document.createElement('div');
+stepper.className = 'kit-stepper';
+stepper.dataset.role = 'stepper';
 
-    const stepper = document.createElement('div');
-    stepper.className = 'kit-stepper';
-    stepper.dataset.role = 'stepper';
-    stepper.hidden = true;
+const minus = document.createElement('button');
+minus.type = 'button';
+minus.textContent = '−';
+minus.dataset.role = 'minus';
+minus.setAttribute('aria-label', 'Remover um pack de 6 de ' + flavor);
+minus.addEventListener('click', () => {
+  packQty.set(flavor, Math.max(0, packQty.get(flavor) - 1));
+  syncKit();
+});
 
-    const minus = document.createElement('button');
-    minus.type = 'button';
-    minus.textContent = '−';
-    minus.dataset.role = 'minus';
-    minus.setAttribute('aria-label', 'Remover um pack de 6 de ' + flavor);
-    minus.addEventListener('click', () => {
-      packQty.set(flavor, Math.max(0, packQty.get(flavor) - 1));
-      syncKit();
-    });
+const countWrap = document.createElement('div');
+countWrap.className = 'kit-stepper-count';
 
-    const countWrap = document.createElement('div');
-    countWrap.className = 'kit-stepper-count';
+const output = document.createElement('output');
+output.dataset.role = 'amount';
+output.setAttribute('aria-label', 'Quantidade de garrafas de ' + flavor);
+output.textContent = '0';
 
-    const output = document.createElement('output');
-    output.dataset.role = 'amount';
-    output.setAttribute('aria-label', 'Quantidade de garrafas de ' + flavor);
-    output.textContent = '6';
+const unit = document.createElement('span');
+unit.textContent = 'garrafas';
 
-    const unit = document.createElement('span');
-    unit.textContent = 'garrafas';
+countWrap.append(output, unit);
 
-    countWrap.append(output, unit);
+const plus = document.createElement('button');
+plus.type = 'button';
+plus.textContent = '+';
+plus.dataset.role = 'plus';
+plus.setAttribute('aria-label', 'Adicionar mais um pack de 6 de ' + flavor);
+plus.addEventListener('click', () => {
+  packQty.set(flavor, packQty.get(flavor) + 1);
+  syncKit();
+});
 
-    const plus = document.createElement('button');
-    plus.type = 'button';
-    plus.textContent = '+';
-    plus.dataset.role = 'plus';
-    plus.setAttribute('aria-label', 'Adicionar mais um pack de 6 de ' + flavor);
-    plus.addEventListener('click', () => {
-      packQty.set(flavor, packQty.get(flavor) + 1);
-      syncKit();
-    });
+const quickCartButton = document.createElement('button');
+quickCartButton.type = 'button';
+quickCartButton.className = 'kit-quick-cart';
+quickCartButton.dataset.role = 'quick-cart';
+quickCartButton.setAttribute(
+  'aria-label',
+  'Adicionar kit completo ao carrinho'
+);
 
-    
+quickCartButton.title = 'Adicionar kit completo ao carrinho';
+
+quickCartButton.innerHTML = `
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M2 4h3l3 11h11l2-8h-9M15 3v6M12 6h6"/>
+    <circle cx="9" cy="20" r="1.5"/>
+    <circle cx="18" cy="20" r="1.5"/>
+  </svg>
+`;
+quickCartButton.addEventListener('click', () => {
+  addCurrentKitToCart(false);
+});
+
 stepper.append(minus, countWrap, plus);
-action.append(addButton, stepper);
+action.append(stepper, quickCartButton);
 
 // Botão para remover todo o sabor de uma vez
 const removeButton = document.createElement('button');
@@ -1107,79 +1281,99 @@ function syncKit() {
 
   $$('.kit-flavor-card').forEach(row => {
 
-    const flavor = row.dataset.flavor;
-    const qty = packQty.get(flavor);
-    const selected = qty > 0;
+  const flavor = row.dataset.flavor;
+  const qty = packQty.get(flavor);
+  const selected = qty > 0;
 
-    row.classList.toggle('is-selected', selected);
+  row.classList.toggle('is-selected', selected);
 
-    const note = row.querySelector('[data-role="flavor-note"]');
-    const addButton = row.querySelector('[data-role="add"]');
-    const stepper = row.querySelector('[data-role="stepper"]');
-    const minus = row.querySelector('[data-role="minus"]');
-    const output = row.querySelector('[data-role="amount"]');
+  const note = row.querySelector('[data-role="flavor-note"]');
 
-    note.textContent = selected
-      ? qty + (qty === 1 ? ' pack selecionado · ' : ' packs selecionados · ') + (qty * 6) + ' garrafas'
-      : 'Cada adição equivale a 6 garrafas';
+  note.innerHTML = selected
+    ? qty + (qty === 1
+        ? ' pack selecionado'
+        : ' packs selecionados')
+      + '<br>' + (qty * 6) + ' garrafas'
+    : 'Cada adição<br>equivale a 6 garrafas';
 
-    
-addButton.hidden = selected;
-stepper.hidden = !selected;
-minus.disabled = !selected;
-output.textContent = String(qty * 6 || 6);
+  row.querySelector('[data-role="amount"]')
+    .textContent = String(qty * 6);
 
-// Exibe o botão de remover somente quando selecionado
-row.querySelector('[data-role="remove"]').hidden = !selected;
+  row.querySelector('[data-role="minus"]')
+    .disabled = !selected;
 
-  });
+  row.querySelector('[data-role="quick-cart"]')
+    .disabled = packs === 0;
+
+  row.querySelector('[data-role="remove"]')
+    .hidden = !selected;
+
+});
 
   const selectedFlavors = flavors.filter(flavor => packQty.get(flavor) > 0);
 
   $('#kit-quantity').textContent = String(bottles);
 
-  $('#kit-description').textContent = selectedFlavors.length
-    ? selectedFlavors.map(flavor => flavor + ': ' + (packQty.get(flavor) * 6) + ' garrafas').join(' · ')
-    : 'Selecione ao menos um sabor';
+    $('#kit-description').textContent = selectedFlavors.length
+  ? selectedFlavors.map(flavor => flavor + ': ' + (packQty.get(flavor) * 6) + ' garrafas').join(' · ')
+  : 'Selecione ao menos um sabor';
 
-  $('#add-kit').disabled = packs === 0;
+updateKitPriceWidget();
 
-  $('#kit-feedback').textContent = packs === 0
-    ? 'Comece adicionando seu primeiro sabor. Você pode repetir qualquer um deles quantas vezes quiser.'
-    : 'Sua caixa tem ' + bottles + ' garrafas. Você pode adicioná-la ao carrinho ou continuar incluindo packs de 6.';
 }
 
 buildKitOptions();
 syncKit();
 
-$('#add-kit').addEventListener('click', () => {
-  const count = totalPacks() * 6;
-  if (!count) return;
+// Controla a visibilidade do widget durante a navegação
 
-  const combination = flavors
-    .filter(flavor => packQty.get(flavor) > 0)
-    .map(flavor => flavor + ' × ' + (packQty.get(flavor) * 6))
-    .join(', ');
+const kitPriceObserver = new IntersectionObserver(([entry]) => {
 
-  addToCart('Monte seu kit · ' + count + ' garrafas (' + combination + ')', count);
+  kitPriceInView = entry.isIntersecting;
 
-  flavors.forEach(flavor => packQty.set(flavor, 0));
-  syncKit();
+  updateKitPriceWidget();
+
 });
+
+kitPriceObserver.observe($('#monte-kit'));
 
   const scrim = $('#scrim'), drawer = $('#cart-drawer'), modal = $('#video-modal');
   let lastFocus = null;
   function openOverlay(el) {
-    lastFocus = document.activeElement;
-    scrim.hidden = false; el.hidden = false; document.body.style.overflow = 'hidden';
-    (el.querySelector('button') || el).focus();
-  }
-  function closeOverlays() {
-    scrim.hidden = true; drawer.hidden = true; modal.hidden = true; packFlavorModal.hidden = true;
-    document.body.style.overflow = '';
-    if (lastFocus?.focus) lastFocus.focus();
-  }
-  $('#open-cart').addEventListener('click', () => openOverlay(drawer));
+  lastFocus = document.activeElement;
+
+  scrim.hidden = false;
+  el.hidden = false;
+
+  document.body.style.overflow = 'hidden';
+
+  (el.querySelector('button') || el).focus();
+
+  updateKitPriceWidget();
+}
+
+function closeOverlays() {
+  scrim.hidden = true;
+  drawer.hidden = true;
+  modal.hidden = true;
+  packFlavorModal.hidden = true;
+
+  document.body.style.overflow = '';
+
+  if (lastFocus?.focus) lastFocus.focus();
+
+  updateKitPriceWidget();
+}
+  // Carrinho no desktop
+$('#open-cart').addEventListener('click', () => openOverlay(drawer));
+
+// Login no mobile
+$('#open-login').addEventListener('click', () => {
+  toast('Área de login em breve.');
+});
+
+// Carrinho no menu flutuante mobile
+$('#open-cart-mobile').addEventListener('click', () => openOverlay(drawer));
   $('#close-cart').addEventListener('click', closeOverlays);
   $('#close-video').addEventListener('click', closeOverlays);
   $('#done-video').addEventListener('click', closeOverlays);
@@ -1240,7 +1434,7 @@ socialTabs.forEach((tab, index) => {
   
   // MENU MOBILE — ATIVAÇÃO SOMENTE POR CLIQUE
 
-  const navItems = $$('.mobile-nav-item');
+  const navItems = $$('.mobile-nav-item[data-nav]');
 
   function activateNav(id) {
     navItems.forEach(link => {
