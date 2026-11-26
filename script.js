@@ -370,135 +370,160 @@ function updatePackCarousel(key) {
   featureMedia.classList.add('has-photo');
 }
 
+
 // Arraste contínuo com dedo ou mouse
 
 let packGesture = null;
 let suppressPackClickUntil = 0;
-
 let packAnimationFrame = null;
-let packDragProgress = 0;
 
-packImageCarousel.addEventListener('pointerdown', event => {
-
-  if (!event.isPrimary || event.button !== 0) return;
+function beginPackGesture(id, x, y, type) {
+  if (packGesture) return false;
 
   suppressPackClickUntil = 0;
 
   packGesture = {
-    id: event.pointerId,
-    x: event.clientX,
-    y: event.clientY,
+    id,
+    type,
+    x,
+    y,
     time: performance.now(),
     step: Math.max(
       1,
       packImageCards.get(currentProduct).offsetWidth * .86
     ),
-    dragging: false
+    axis: null,
+    dx: 0
   };
 
-});
+  return true;
+}
 
-packImageCarousel.addEventListener('pointermove', event => {
+function movePackGesture(x, y, event) {
 
   const gesture = packGesture;
+  if (!gesture) return;
 
-  if (!gesture || event.pointerId !== gesture.id) return;
+  const dx = x - gesture.x;
+  const dy = y - gesture.y;
 
-  const dx = event.clientX - gesture.x;
-  const dy = event.clientY - gesture.y;
+  const ax = Math.abs(dx);
+  const ay = Math.abs(dy);
 
-  if (!gesture.dragging) {
+  // Identifica a direção sem cancelar
+  // pequenos movimentos diagonais
 
-    if (Math.max(Math.abs(dx), Math.abs(dy)) < 7) return;
+  if (gesture.axis === null) {
 
-    // Preserva a rolagem vertical da página
+    if (ax >= 5 && ax >= ay * .9) {
 
-    if (Math.abs(dy) >= Math.abs(dx)) {
-      packGesture = null;
+      gesture.axis = 'x';
+      packImageCarousel.classList.add('is-dragging');
+
+    } else if (ay >= 10 && ay > ax * 1.3) {
+
+      gesture.axis = 'y';
+
+    }
+  }
+
+  if (gesture.axis !== 'x') return;
+
+  // Impede que o navegador interrompa
+  // um arraste horizontal
+
+  if (gesture.type === 'touch') {
+
+    if (!event.cancelable) {
+      finishPackGesture(true);
       return;
     }
 
-    gesture.dragging = true;
-
-    packImageCarousel.classList.add('is-dragging');
-
-    packImageCarousel.setPointerCapture(event.pointerId);
+    event.preventDefault();
 
   }
 
-  const progress = Math.max(
-    -1,
-    Math.min(1, dx / gesture.step)
-  );
+  gesture.dx = dx;
 
-  packDragProgress = progress;
+  // Atualiza apenas uma vez por frame
 
-if (packAnimationFrame === null) {
+  if (packAnimationFrame === null) {
 
-  packAnimationFrame = requestAnimationFrame(() => {
+    packAnimationFrame = requestAnimationFrame(() => {
 
-    packAnimationFrame = null;
+      packAnimationFrame = null;
 
-    if (!packGesture?.dragging) return;
+      if (packGesture?.axis !== 'x') return;
 
-    paintPackCarousel(
-      currentProduct,
-      packDragProgress
-    );
+      const progress = Math.max(
+        -1,
+        Math.min(1, packGesture.dx / packGesture.step)
+      );
 
-  });
+      paintPackCarousel(currentProduct, progress);
 
+    });
+
+  }
 }
 
-});
-
-// Finaliza o gesto e encaixa o próximo pack
-
-function finishPackGesture(event, cancelled = false) {
+function finishPackGesture(cancelled = false) {
 
   const gesture = packGesture;
 
-  if (!gesture || event.pointerId !== gesture.id) return;
+  if (!gesture) return;
 
   packGesture = null;
 
-if (packAnimationFrame !== null) {
-  cancelAnimationFrame(packAnimationFrame);
-  packAnimationFrame = null;
-}
+  if (packAnimationFrame !== null) {
 
-if (!gesture.dragging) return;
+    cancelAnimationFrame(packAnimationFrame);
+    packAnimationFrame = null;
 
-  const dx = event.clientX - gesture.x;
+  }
+
+  if (gesture.axis !== 'x') {
+
+    if (gesture.axis === 'y') {
+      suppressPackClickUntil = performance.now() + 350;
+    }
+
+    return;
+  }
+
+  packImageCarousel.classList.remove('is-dragging');
+
+  suppressPackClickUntil = performance.now() + 350;
+
+  const distance = Math.abs(gesture.dx);
 
   const elapsed = Math.max(
     1,
     performance.now() - gesture.time
   );
 
-  const fastSwipe =
-    Math.abs(dx) >= 20 &&
-    Math.abs(dx) / elapsed > .45;
+  // Distância mínima adaptável ao tamanho do card
 
-  const shouldChange = !cancelled && (
-    Math.abs(dx) >= gesture.step * .22 || fastSwipe
+  const threshold = Math.min(
+    32,
+    Math.max(18, gesture.step * .14)
   );
 
-  packImageCarousel.classList.remove('is-dragging');
+  const fastSwipe =
+    distance >= 12 &&
+    distance / elapsed >= .3;
 
-  suppressPackClickUntil = performance.now() + 350;
+  if (!cancelled && (distance >= threshold || fastSwipe)) {
 
-  if (shouldChange) {
-
-    const direction = dx < 0 ? 1 : -1;
+    const direction = gesture.dx < 0 ? 1 : -1;
 
     const index = packOrder.indexOf(currentProduct);
 
-    const nextIndex = (
+    const next = (
       index + direction + packOrder.length
     ) % packOrder.length;
 
-    selectProduct(packOrder[nextIndex]);
+    selectProduct(packOrder[next]);
 
   } else {
 
@@ -507,29 +532,146 @@ if (!gesture.dragging) return;
   }
 }
 
+// ==========================================
+// MOBILE — CONTROLE DO TOQUE
+// ==========================================
+
+packImageCarousel.addEventListener('touchstart', event => {
+
+  if (event.touches.length !== 1) {
+
+    if (packGesture?.type === 'touch') {
+      finishPackGesture(true);
+    }
+
+    return;
+  }
+
+  const touch = event.changedTouches[0];
+
+  beginPackGesture(
+    touch.identifier,
+    touch.clientX,
+    touch.clientY,
+    'touch'
+  );
+
+}, { passive: true });
+
+packImageCarousel.addEventListener('touchmove', event => {
+
+  if (packGesture?.type !== 'touch') return;
+
+  if (event.touches.length !== 1) {
+    finishPackGesture(true);
+    return;
+  }
+
+  const touch = Array.from(event.touches).find(
+    t => t.identifier === packGesture.id
+  );
+
+  if (touch) {
+    movePackGesture(touch.clientX, touch.clientY, event);
+  }
+
+}, { passive: false });
+
+packImageCarousel.addEventListener('touchend', event => {
+
+  if (packGesture?.type !== 'touch') return;
+
+  const touch = Array.from(event.changedTouches).find(
+    t => t.identifier === packGesture.id
+  );
+
+  if (!touch) return;
+
+  if (packGesture.axis === 'x') {
+    packGesture.dx = touch.clientX - packGesture.x;
+  }
+
+  finishPackGesture();
+
+}, { passive: true });
+
+packImageCarousel.addEventListener('touchcancel', () => {
+
+  if (packGesture?.type === 'touch') {
+    finishPackGesture(true);
+  }
+
+});
+
+// ==========================================
+// DESKTOP — CONTROLE DO MOUSE
+// ==========================================
+
+packImageCarousel.addEventListener('pointerdown', event => {
+
+  if (
+    event.pointerType === 'touch' ||
+    !event.isPrimary ||
+    event.button !== 0
+  ) return;
+
+  if (!beginPackGesture(
+    event.pointerId,
+    event.clientX,
+    event.clientY,
+    'pointer'
+  )) return;
+
+  event.target.setPointerCapture(event.pointerId);
+
+});
+
+packImageCarousel.addEventListener('pointermove', event => {
+
+  if (
+    packGesture?.type !== 'pointer' ||
+    event.pointerId !== packGesture.id
+  ) return;
+
+  movePackGesture(event.clientX, event.clientY, event);
+
+});
+
 packImageCarousel.addEventListener('pointerup', event => {
-  finishPackGesture(event);
-});
 
-packImageCarousel.addEventListener('pointercancel', event => {
-  finishPackGesture(event, true);
-});
+  if (
+    packGesture?.type !== 'pointer' ||
+    event.pointerId !== packGesture.id
+  ) return;
 
-packImageCarousel.addEventListener('lostpointercapture', event => {
-
-  if (event.target === packImageCarousel) {
-    finishPackGesture(event, true);
+  if (packGesture.axis === 'x') {
+    packGesture.dx = event.clientX - packGesture.x;
   }
 
+  finishPackGesture();
+
 });
 
-packImageCarousel.addEventListener('pointerleave', event => {
+function cancelPackPointer(event) {
 
-  if (packGesture && !packGesture.dragging) {
-    finishPackGesture(event, true);
+  if (
+    packGesture?.type === 'pointer' &&
+    event.pointerId === packGesture.id
+  ) {
+    finishPackGesture(true);
   }
 
-});
+}
+
+packImageCarousel.addEventListener(
+  'pointercancel',
+  cancelPackPointer
+);
+
+packImageCarousel.addEventListener(
+  'lostpointercapture',
+  cancelPackPointer
+);
 
 // Impede cliques acidentais depois do arraste
 
@@ -539,15 +681,16 @@ packImageCarousel.addEventListener('click', event => {
     event.detail !== 0 &&
     performance.now() < suppressPackClickUntil
   ) {
+
     event.preventDefault();
     event.stopPropagation();
+
   }
 
 }, true);
 
 // Define a posição inicial
 updatePackCarousel(currentProduct);
-
 
 
 function selectProduct(key, focus = false) {
