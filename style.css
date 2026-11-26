@@ -2433,10 +2433,48 @@ a {
   font-size: 11px;
 }
 
+/* Botão único de compra */
+
+#kit-widget-add {
+  width: 100%;
+  min-height: 42px;
+
+  margin-top: 8px;
+  padding: 9px 12px;
+
+  background: #6C2B99;
+  border: 0;
+  border-radius: 12px;
+  color: #FFFFFF;
+
+  font-size: 12px;
+  font-weight: 750;
+}
+
+#kit-widget-add svg {
+  width: 18px;
+  height: 18px;
+
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+#kit-widget-add:hover:not(:disabled) {
+  background: #542078;
+}
+
+#kit-widget-add:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+
 /* Evita sobrepor a notificação de compra */
 
 #kit-price-widget:not([hidden]) ~ .toast {
-  bottom: 240px;
+  bottom: 290px;
 }
 
 /* MOBILE — ACIMA DO MENU FLUTUANTE */
@@ -2455,8 +2493,8 @@ a {
   }
 
   #kit-price-widget:not([hidden]) ~ .toast {
-    bottom: calc(225px + env(safe-area-inset-bottom));
-  }
+  bottom: calc(275px + env(safe-area-inset-bottom));
+}
 
 }
 
@@ -6629,45 +6667,6 @@ border: 2px solid #FFFFFF;
   display: none;
 }
 
-/* Botão de adicionar ao carrinho */
-
-#monte-kit .kit-quick-cart {
-  display: grid;
-  place-items: center;
-
-  width: 100px;
-  max-width: 100%;
-  height: 34px;
-  min-height: 34px;
-  padding: 0;
-
-  border: none;
-  border-radius: 999px;
-  background: #6D28D9;
-  color: #FFFFFF;
-}
-
-#monte-kit .kit-quick-cart svg {
-  width: 20px;
-  height: 20px;
-
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.7;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-#monte-kit .kit-quick-cart:hover:not(:disabled) {
-  background: #581DB8;
-}
-
-#monte-kit .kit-quick-cart:disabled {
-  opacity: .45;
-  cursor: not-allowed;
-}
-
-
 
 /* =====================================
    POP-UP DE BOAS-VINDAS
@@ -7906,32 +7905,26 @@ aspect-ratio: 1 / 1;
   /* Controles à direita */
 
   .device.mobile #monte-kit .kit-flavor-action {
-    grid-column: 3;
-    grid-row: 1;
+  grid-column: 3;
+  grid-row: 1;
 
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    justify-content: flex-end;
-    align-self: end;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  align-self: center;
 
-    gap: 6px;
-    margin: 0;
-    padding: 0;
-    min-width: 0;
-  }
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
 
   /* Seletor superior */
 
   .device.mobile #monte-kit .kit-stepper {
     width: 100%;
     margin: 0;
-  }
-
-  /* Carrinho inferior */
-
-  .device.mobile #monte-kit .kit-quick-cart {
-    width: 100%;
   }
 
   /* Ajuste para celulares menores */

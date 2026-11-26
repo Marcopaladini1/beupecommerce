@@ -1247,7 +1247,9 @@ function updateKitPriceWidget() {
     formatPrice(confirmed);
 
   $('#kit-price-total').textContent =
-    formatPrice(pending + confirmed);
+  formatPrice(pending + confirmed);
+
+$('#kit-widget-add').disabled = totalPacks() === 0;
 
   kitPriceWidget.hidden =
     !kitPriceInView ||
@@ -1357,30 +1359,8 @@ plus.addEventListener('click', () => {
   syncKit();
 });
 
-const quickCartButton = document.createElement('button');
-quickCartButton.type = 'button';
-quickCartButton.className = 'kit-quick-cart';
-quickCartButton.dataset.role = 'quick-cart';
-quickCartButton.setAttribute(
-  'aria-label',
-  'Adicionar kit completo ao carrinho'
-);
-
-quickCartButton.title = 'Adicionar kit completo ao carrinho';
-
-quickCartButton.innerHTML = `
-  <svg viewBox="0 0 24 24" aria-hidden="true">
-    <path d="M2 4h3l3 11h11l2-8h-9M15 3v6M12 6h6"/>
-    <circle cx="9" cy="20" r="1.5"/>
-    <circle cx="18" cy="20" r="1.5"/>
-  </svg>
-`;
-quickCartButton.addEventListener('click', () => {
-  addCurrentKitToCart(false);
-});
-
 stepper.append(minus, countWrap, plus);
-action.append(stepper, quickCartButton);
+action.append(stepper);
 
 // Botão para remover todo o sabor de uma vez
 const removeButton = document.createElement('button');
@@ -1445,9 +1425,6 @@ function syncKit() {
   row.querySelector('[data-role="minus"]')
     .disabled = !selected;
 
-  row.querySelector('[data-role="quick-cart"]')
-    .disabled = packs === 0;
-
   row.querySelector('[data-role="remove"]')
     .hidden = !selected;
 
@@ -1467,6 +1444,10 @@ updateKitPriceWidget();
 
 buildKitOptions();
 syncKit();
+
+$('#kit-widget-add').addEventListener('click', () => {
+  addCurrentKitToCart(false);
+});
 
 // Controla a visibilidade do widget durante a navegação
 
